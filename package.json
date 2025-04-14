@@ -1,0 +1,42 @@
+{
+  "name": "@ttab/elephant-tt-api",
+  "private": false,
+  "license": "MIT",
+  "version": "0.17.7-1",
+  "type": "module",
+  "exports": {
+    "./baboon": {
+      "types": "./dist/baboon/index.d.ts",
+      "import": "./dist/baboon/index.js",
+      "require": "./dist/baboon/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/ttab"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ttab/elephant-api-npm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:baboon": "tsup ./src/baboon/index.ts --format cjs,esm --dts --outDir ./dist/baboon",
+    "build": "npm run build:baboon",
+    "update": "bash .github/workflows/update.sh",
+    "prepublish": "npm run build"
+  },
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "@protobuf-ts/plugin": "^2.9.4",
+    "tsup": "^8.3.5"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@protobuf-ts/runtime": "^2.9.4",
+    "@protobuf-ts/runtime-rpc": "^2.9.4"
+  }
+}
