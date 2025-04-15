@@ -4,8 +4,6 @@
 // tslint:disable
 // @ts-nocheck
 import { Print } from "./service";
-import type { GetRenderedArticlesResponse } from "./service";
-import type { GetRenderedArticlesRequest } from "./service";
 import type { GetScribusInfoResponse } from "./service";
 import type { GetScribusInfoRequest } from "./service";
 import type { CopyArticleToFlowResponse } from "./service";
@@ -147,12 +145,6 @@ export interface IPrintClient {
      * @generated from protobuf rpc: GetScribusInfo(ttab.baboon.GetScribusInfoRequest) returns (ttab.baboon.GetScribusInfoResponse);
      */
     getScribusInfo(input: GetScribusInfoRequest, options?: RpcOptions): UnaryCall<GetScribusInfoRequest, GetScribusInfoResponse>;
-    /**
-     * GetRenderedArticles allows a client to consume and download all finished renders.
-     *
-     * @generated from protobuf rpc: GetRenderedArticles(ttab.baboon.GetRenderedArticlesRequest) returns (ttab.baboon.GetRenderedArticlesResponse);
-     */
-    getRenderedArticles(input: GetRenderedArticlesRequest, options?: RpcOptions): UnaryCall<GetRenderedArticlesRequest, GetRenderedArticlesResponse>;
 }
 /**
  * @generated from protobuf service ttab.baboon.Print
@@ -206,14 +198,5 @@ export class PrintClient implements IPrintClient, ServiceInfo {
     getScribusInfo(input: GetScribusInfoRequest, options?: RpcOptions): UnaryCall<GetScribusInfoRequest, GetScribusInfoResponse> {
         const method = this.methods[5], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetScribusInfoRequest, GetScribusInfoResponse>("unary", this._transport, method, opt, input);
-    }
-    /**
-     * GetRenderedArticles allows a client to consume and download all finished renders.
-     *
-     * @generated from protobuf rpc: GetRenderedArticles(ttab.baboon.GetRenderedArticlesRequest) returns (ttab.baboon.GetRenderedArticlesResponse);
-     */
-    getRenderedArticles(input: GetRenderedArticlesRequest, options?: RpcOptions): UnaryCall<GetRenderedArticlesRequest, GetRenderedArticlesResponse> {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
-        return stackIntercept<GetRenderedArticlesRequest, GetRenderedArticlesResponse>("unary", this._transport, method, opt, input);
     }
 }
