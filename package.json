@@ -2,7 +2,7 @@
   "name": "@ttab/elephant-tt-api",
   "private": false,
   "license": "MIT",
-  "version": "0.17.7-1",
+  "version": "0.1.0",
   "type": "module",
   "exports": {
     "./baboon": {
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ttab/elephant-api-npm.git"
+    "url": "git+https://github.com/ttab/elephant-tt-api-npm.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
