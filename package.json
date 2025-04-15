@@ -2,7 +2,7 @@
   "name": "@ttab/elephant-tt-api",
   "private": false,
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "type": "module",
   "exports": {
     "./baboon": {
