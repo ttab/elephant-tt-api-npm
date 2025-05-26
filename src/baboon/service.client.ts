@@ -4,6 +4,12 @@
 // tslint:disable
 // @ts-nocheck
 import { Print } from "./service";
+import type { RemoveHypenationResponse } from "./service";
+import type { RemoveHypenationRequest } from "./service";
+import type { ListHypenationsResponse } from "./service";
+import type { ListHypenationsRequest } from "./service";
+import type { SetHypenationResponse } from "./service";
+import type { SetHypenationRequest } from "./service";
 import type { GetRenderedArticlesResponse } from "./service";
 import type { GetRenderedArticlesRequest } from "./service";
 import type { GetScribusInfoResponse } from "./service";
@@ -153,6 +159,24 @@ export interface IPrintClient {
      * @generated from protobuf rpc: GetRenderedArticles(ttab.baboon.GetRenderedArticlesRequest) returns (ttab.baboon.GetRenderedArticlesResponse);
      */
     getRenderedArticles(input: GetRenderedArticlesRequest, options?: RpcOptions): UnaryCall<GetRenderedArticlesRequest, GetRenderedArticlesResponse>;
+    /**
+     * SetHypenation allows clients to set custom hypenation for a word.
+     *
+     * @generated from protobuf rpc: SetHypenation(ttab.baboon.SetHypenationRequest) returns (ttab.baboon.SetHypenationResponse);
+     */
+    setHypenation(input: SetHypenationRequest, options?: RpcOptions): UnaryCall<SetHypenationRequest, SetHypenationResponse>;
+    /**
+     * ListHypenations is used to list words in the hypenation dictionary.
+     *
+     * @generated from protobuf rpc: ListHypenations(ttab.baboon.ListHypenationsRequest) returns (ttab.baboon.ListHypenationsResponse);
+     */
+    listHypenations(input: ListHypenationsRequest, options?: RpcOptions): UnaryCall<ListHypenationsRequest, ListHypenationsResponse>;
+    /**
+     * RemoveHypenation is used to remove a custom hypenation for a word.
+     *
+     * @generated from protobuf rpc: RemoveHypenation(ttab.baboon.RemoveHypenationRequest) returns (ttab.baboon.RemoveHypenationResponse);
+     */
+    removeHypenation(input: RemoveHypenationRequest, options?: RpcOptions): UnaryCall<RemoveHypenationRequest, RemoveHypenationResponse>;
 }
 /**
  * @generated from protobuf service ttab.baboon.Print
@@ -215,5 +239,32 @@ export class PrintClient implements IPrintClient, ServiceInfo {
     getRenderedArticles(input: GetRenderedArticlesRequest, options?: RpcOptions): UnaryCall<GetRenderedArticlesRequest, GetRenderedArticlesResponse> {
         const method = this.methods[6], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetRenderedArticlesRequest, GetRenderedArticlesResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * SetHypenation allows clients to set custom hypenation for a word.
+     *
+     * @generated from protobuf rpc: SetHypenation(ttab.baboon.SetHypenationRequest) returns (ttab.baboon.SetHypenationResponse);
+     */
+    setHypenation(input: SetHypenationRequest, options?: RpcOptions): UnaryCall<SetHypenationRequest, SetHypenationResponse> {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        return stackIntercept<SetHypenationRequest, SetHypenationResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListHypenations is used to list words in the hypenation dictionary.
+     *
+     * @generated from protobuf rpc: ListHypenations(ttab.baboon.ListHypenationsRequest) returns (ttab.baboon.ListHypenationsResponse);
+     */
+    listHypenations(input: ListHypenationsRequest, options?: RpcOptions): UnaryCall<ListHypenationsRequest, ListHypenationsResponse> {
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListHypenationsRequest, ListHypenationsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * RemoveHypenation is used to remove a custom hypenation for a word.
+     *
+     * @generated from protobuf rpc: RemoveHypenation(ttab.baboon.RemoveHypenationRequest) returns (ttab.baboon.RemoveHypenationResponse);
+     */
+    removeHypenation(input: RemoveHypenationRequest, options?: RpcOptions): UnaryCall<RemoveHypenationRequest, RemoveHypenationResponse> {
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        return stackIntercept<RemoveHypenationRequest, RemoveHypenationResponse>("unary", this._transport, method, opt, input);
     }
 }

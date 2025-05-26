@@ -15,6 +15,105 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Document } from "../newsdoc/newsdoc";
 /**
+ * @generated from protobuf message ttab.baboon.SetHypenationRequest
+ */
+export interface SetHypenationRequest {
+    /**
+     * @generated from protobuf field: string language = 1;
+     */
+    language: string;
+    /**
+     * @generated from protobuf field: string word = 2;
+     */
+    word: string;
+    /**
+     * @generated from protobuf field: string hypenated = 3;
+     */
+    hypenated: string;
+    /**
+     * @generated from protobuf field: bool ignore = 4;
+     */
+    ignore: boolean;
+}
+/**
+ * @generated from protobuf message ttab.baboon.SetHypenationResponse
+ */
+export interface SetHypenationResponse {
+}
+/**
+ * @generated from protobuf message ttab.baboon.ListHypenationsRequest
+ */
+export interface ListHypenationsRequest {
+    /**
+     * @generated from protobuf field: string language = 1;
+     */
+    language: string;
+    /**
+     * @generated from protobuf field: int64 page = 2;
+     */
+    page: bigint;
+}
+/**
+ * @generated from protobuf message ttab.baboon.ListHypenationsResponse
+ */
+export interface ListHypenationsResponse {
+    /**
+     * @generated from protobuf field: repeated ttab.baboon.Hypenation items = 1;
+     */
+    items: Hypenation[];
+}
+/**
+ * @generated from protobuf message ttab.baboon.Hypenation
+ */
+export interface Hypenation {
+    /**
+     * @generated from protobuf field: string language = 1;
+     */
+    language: string;
+    /**
+     * @generated from protobuf field: string word = 2;
+     */
+    word: string;
+    /**
+     * @generated from protobuf field: string created = 3;
+     */
+    created: string;
+    /**
+     * @generated from protobuf field: string updated = 4;
+     */
+    updated: string;
+    /**
+     * @generated from protobuf field: string updated_by = 5;
+     */
+    updatedBy: string;
+    /**
+     * @generated from protobuf field: string hypenated = 6;
+     */
+    hypenated: string;
+    /**
+     * @generated from protobuf field: bool ignore = 7;
+     */
+    ignore: boolean;
+}
+/**
+ * @generated from protobuf message ttab.baboon.RemoveHypenationRequest
+ */
+export interface RemoveHypenationRequest {
+    /**
+     * @generated from protobuf field: string language = 1;
+     */
+    language: string;
+    /**
+     * @generated from protobuf field: string word = 2;
+     */
+    word: string;
+}
+/**
+ * @generated from protobuf message ttab.baboon.RemoveHypenationResponse
+ */
+export interface RemoveHypenationResponse {
+}
+/**
  * @generated from protobuf message ttab.baboon.GetRenderedArticlesRequest
  */
 export interface GetRenderedArticlesRequest {
@@ -39,21 +138,53 @@ export interface GetRenderedArticlesResponse {
  */
 export interface RenderEvent {
     /**
+     * Id of the event.
+     *
      * @generated from protobuf field: int64 id = 1;
      */
     id: bigint;
     /**
+     * Type of the event, one of "rendered", "failed", "failed_attempt".
+     *
+     * @generated from protobuf field: string type = 2;
+     */
+    type: string;
+    /**
+     * Article UUID.
+     *
+     * @generated from protobuf field: string article = 3;
+     */
+    article: string;
+    /**
+     * Error - if any that prevented rendering.
+     *
+     * @generated from protobuf field: string error = 4;
+     */
+    error: string;
+    /**
      * Rendered articles that should be downloaded.
      *
-     * @generated from protobuf field: repeated ttab.baboon.RenderedArticle rendered = 2;
+     * @generated from protobuf field: repeated ttab.baboon.RenderedArticle rendered = 5;
      */
     rendered: RenderedArticle[];
     /**
      * Removed articles that should be deleted.
      *
-     * @generated from protobuf field: repeated ttab.baboon.RenderedArticle removed = 3;
+     * @generated from protobuf field: repeated ttab.baboon.RenderedArticle removed = 6;
      */
     removed: RenderedArticle[];
+    /**
+     * ArticleVersion is the version of the article that was rendered.
+     *
+     * @generated from protobuf field: int64 article_version = 7;
+     */
+    articleVersion: bigint;
+    /**
+     * Time is the time the event as an RFC3339 timestamp.
+     *
+     * @generated from protobuf field: string time = 8;
+     */
+    time: string;
 }
 /**
  * @generated from protobuf message ttab.baboon.RenderedArticle
@@ -64,30 +195,46 @@ export interface RenderedArticle {
      */
     date: string;
     /**
-     * @generated from protobuf field: string layout = 2;
+     * @generated from protobuf field: string product = 2;
+     */
+    product: string;
+    /**
+     * @generated from protobuf field: string layout = 3;
      */
     layout: string;
     /**
-     * @generated from protobuf field: string position = 3;
+     * @generated from protobuf field: string position = 4;
      */
     position: string;
     /**
-     * DownloadLink that can be used to fetch the PDF. Not present for removed
-     * articles.
+     * @generated from protobuf field: ttab.baboon.RenderedAsset pdf = 5;
+     */
+    pdf?: RenderedAsset;
+    /**
+     * @generated from protobuf field: ttab.baboon.RenderedAsset tagged_text = 6;
+     */
+    taggedText?: RenderedAsset;
+}
+/**
+ * @generated from protobuf message ttab.baboon.RenderedAsset
+ */
+export interface RenderedAsset {
+    /**
+     * DownloadLink that can be used to fetch the asset.
      *
-     * @generated from protobuf field: string download_link = 4;
+     * @generated from protobuf field: string download_link = 5;
      */
     downloadLink: string;
     /**
      * Size of the PDF in bytes.
      *
-     * @generated from protobuf field: int64 size = 5;
+     * @generated from protobuf field: int64 size = 6;
      */
     size: bigint;
     /**
      * Sha256Hash is the SHA-256 checksum for the PDF.
      *
-     * @generated from protobuf field: string sha256_hash = 6;
+     * @generated from protobuf field: string sha256_hash = 7;
      */
     sha256Hash: string;
 }
@@ -114,6 +261,13 @@ export interface CreateFlowRequest {
      * @generated from protobuf field: repeated string articles = 3;
      */
     articles: string[];
+    /**
+     * TemplateUUID is the UUID of an article to use as a template for the created
+     * print articles. Optional.
+     *
+     * @generated from protobuf field: string template_uuid = 4;
+     */
+    templateUuid: string;
 }
 /**
  * @generated from protobuf message ttab.baboon.CreateFlowResponse
@@ -547,6 +701,12 @@ export interface RenderArticleResponse {
      * @generated from protobuf field: repeated ttab.baboon.Overflow overflows = 8;
      */
     overflows: Overflow[];
+    /**
+     * TaggedTextUrl is a zip archive with the indesign-tagged text for the article.
+     *
+     * @generated from protobuf field: string tagged_text_url = 9;
+     */
+    taggedTextUrl: string;
 }
 /**
  * @generated from protobuf message ttab.baboon.MountedImage
@@ -703,6 +863,405 @@ export enum FrameType {
     FRAME_IMAGE = 2
 }
 // @generated message type with reflection information, may provide speed optimized methods
+class SetHypenationRequest$Type extends MessageType<SetHypenationRequest> {
+    constructor() {
+        super("ttab.baboon.SetHypenationRequest", [
+            { no: 1, name: "language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "word", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "hypenated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "ignore", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SetHypenationRequest>): SetHypenationRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.language = "";
+        message.word = "";
+        message.hypenated = "";
+        message.ignore = false;
+        if (value !== undefined)
+            reflectionMergePartial<SetHypenationRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetHypenationRequest): SetHypenationRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string language */ 1:
+                    message.language = reader.string();
+                    break;
+                case /* string word */ 2:
+                    message.word = reader.string();
+                    break;
+                case /* string hypenated */ 3:
+                    message.hypenated = reader.string();
+                    break;
+                case /* bool ignore */ 4:
+                    message.ignore = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SetHypenationRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string language = 1; */
+        if (message.language !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.language);
+        /* string word = 2; */
+        if (message.word !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.word);
+        /* string hypenated = 3; */
+        if (message.hypenated !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.hypenated);
+        /* bool ignore = 4; */
+        if (message.ignore !== false)
+            writer.tag(4, WireType.Varint).bool(message.ignore);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.SetHypenationRequest
+ */
+export const SetHypenationRequest = new SetHypenationRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SetHypenationResponse$Type extends MessageType<SetHypenationResponse> {
+    constructor() {
+        super("ttab.baboon.SetHypenationResponse", []);
+    }
+    create(value?: PartialMessage<SetHypenationResponse>): SetHypenationResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<SetHypenationResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SetHypenationResponse): SetHypenationResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SetHypenationResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.SetHypenationResponse
+ */
+export const SetHypenationResponse = new SetHypenationResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListHypenationsRequest$Type extends MessageType<ListHypenationsRequest> {
+    constructor() {
+        super("ttab.baboon.ListHypenationsRequest", [
+            { no: 1, name: "language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "page", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListHypenationsRequest>): ListHypenationsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.language = "";
+        message.page = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<ListHypenationsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListHypenationsRequest): ListHypenationsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string language */ 1:
+                    message.language = reader.string();
+                    break;
+                case /* int64 page */ 2:
+                    message.page = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListHypenationsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string language = 1; */
+        if (message.language !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.language);
+        /* int64 page = 2; */
+        if (message.page !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.page);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.ListHypenationsRequest
+ */
+export const ListHypenationsRequest = new ListHypenationsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListHypenationsResponse$Type extends MessageType<ListHypenationsResponse> {
+    constructor() {
+        super("ttab.baboon.ListHypenationsResponse", [
+            { no: 1, name: "items", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Hypenation }
+        ]);
+    }
+    create(value?: PartialMessage<ListHypenationsResponse>): ListHypenationsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.items = [];
+        if (value !== undefined)
+            reflectionMergePartial<ListHypenationsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListHypenationsResponse): ListHypenationsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.baboon.Hypenation items */ 1:
+                    message.items.push(Hypenation.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListHypenationsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.baboon.Hypenation items = 1; */
+        for (let i = 0; i < message.items.length; i++)
+            Hypenation.internalBinaryWrite(message.items[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.ListHypenationsResponse
+ */
+export const ListHypenationsResponse = new ListHypenationsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Hypenation$Type extends MessageType<Hypenation> {
+    constructor() {
+        super("ttab.baboon.Hypenation", [
+            { no: 1, name: "language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "word", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "created", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "updated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "updated_by", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "hypenated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "ignore", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Hypenation>): Hypenation {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.language = "";
+        message.word = "";
+        message.created = "";
+        message.updated = "";
+        message.updatedBy = "";
+        message.hypenated = "";
+        message.ignore = false;
+        if (value !== undefined)
+            reflectionMergePartial<Hypenation>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Hypenation): Hypenation {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string language */ 1:
+                    message.language = reader.string();
+                    break;
+                case /* string word */ 2:
+                    message.word = reader.string();
+                    break;
+                case /* string created */ 3:
+                    message.created = reader.string();
+                    break;
+                case /* string updated */ 4:
+                    message.updated = reader.string();
+                    break;
+                case /* string updated_by */ 5:
+                    message.updatedBy = reader.string();
+                    break;
+                case /* string hypenated */ 6:
+                    message.hypenated = reader.string();
+                    break;
+                case /* bool ignore */ 7:
+                    message.ignore = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Hypenation, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string language = 1; */
+        if (message.language !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.language);
+        /* string word = 2; */
+        if (message.word !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.word);
+        /* string created = 3; */
+        if (message.created !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.created);
+        /* string updated = 4; */
+        if (message.updated !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.updated);
+        /* string updated_by = 5; */
+        if (message.updatedBy !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.updatedBy);
+        /* string hypenated = 6; */
+        if (message.hypenated !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.hypenated);
+        /* bool ignore = 7; */
+        if (message.ignore !== false)
+            writer.tag(7, WireType.Varint).bool(message.ignore);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.Hypenation
+ */
+export const Hypenation = new Hypenation$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RemoveHypenationRequest$Type extends MessageType<RemoveHypenationRequest> {
+    constructor() {
+        super("ttab.baboon.RemoveHypenationRequest", [
+            { no: 1, name: "language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "word", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<RemoveHypenationRequest>): RemoveHypenationRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.language = "";
+        message.word = "";
+        if (value !== undefined)
+            reflectionMergePartial<RemoveHypenationRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RemoveHypenationRequest): RemoveHypenationRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string language */ 1:
+                    message.language = reader.string();
+                    break;
+                case /* string word */ 2:
+                    message.word = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RemoveHypenationRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string language = 1; */
+        if (message.language !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.language);
+        /* string word = 2; */
+        if (message.word !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.word);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.RemoveHypenationRequest
+ */
+export const RemoveHypenationRequest = new RemoveHypenationRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RemoveHypenationResponse$Type extends MessageType<RemoveHypenationResponse> {
+    constructor() {
+        super("ttab.baboon.RemoveHypenationResponse", []);
+    }
+    create(value?: PartialMessage<RemoveHypenationResponse>): RemoveHypenationResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<RemoveHypenationResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RemoveHypenationResponse): RemoveHypenationResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RemoveHypenationResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.RemoveHypenationResponse
+ */
+export const RemoveHypenationResponse = new RemoveHypenationResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class GetRenderedArticlesRequest$Type extends MessageType<GetRenderedArticlesRequest> {
     constructor() {
         super("ttab.baboon.GetRenderedArticlesRequest", [
@@ -801,15 +1360,25 @@ class RenderEvent$Type extends MessageType<RenderEvent> {
     constructor() {
         super("ttab.baboon.RenderEvent", [
             { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 2, name: "rendered", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => RenderedArticle },
-            { no: 3, name: "removed", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => RenderedArticle }
+            { no: 2, name: "type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "article", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "error", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "rendered", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => RenderedArticle },
+            { no: 6, name: "removed", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => RenderedArticle },
+            { no: 7, name: "article_version", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 8, name: "time", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<RenderEvent>): RenderEvent {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.id = 0n;
+        message.type = "";
+        message.article = "";
+        message.error = "";
         message.rendered = [];
         message.removed = [];
+        message.articleVersion = 0n;
+        message.time = "";
         if (value !== undefined)
             reflectionMergePartial<RenderEvent>(this, message, value);
         return message;
@@ -822,11 +1391,26 @@ class RenderEvent$Type extends MessageType<RenderEvent> {
                 case /* int64 id */ 1:
                     message.id = reader.int64().toBigInt();
                     break;
-                case /* repeated ttab.baboon.RenderedArticle rendered */ 2:
+                case /* string type */ 2:
+                    message.type = reader.string();
+                    break;
+                case /* string article */ 3:
+                    message.article = reader.string();
+                    break;
+                case /* string error */ 4:
+                    message.error = reader.string();
+                    break;
+                case /* repeated ttab.baboon.RenderedArticle rendered */ 5:
                     message.rendered.push(RenderedArticle.internalBinaryRead(reader, reader.uint32(), options));
                     break;
-                case /* repeated ttab.baboon.RenderedArticle removed */ 3:
+                case /* repeated ttab.baboon.RenderedArticle removed */ 6:
                     message.removed.push(RenderedArticle.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* int64 article_version */ 7:
+                    message.articleVersion = reader.int64().toBigInt();
+                    break;
+                case /* string time */ 8:
+                    message.time = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -843,12 +1427,27 @@ class RenderEvent$Type extends MessageType<RenderEvent> {
         /* int64 id = 1; */
         if (message.id !== 0n)
             writer.tag(1, WireType.Varint).int64(message.id);
-        /* repeated ttab.baboon.RenderedArticle rendered = 2; */
+        /* string type = 2; */
+        if (message.type !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.type);
+        /* string article = 3; */
+        if (message.article !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.article);
+        /* string error = 4; */
+        if (message.error !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.error);
+        /* repeated ttab.baboon.RenderedArticle rendered = 5; */
         for (let i = 0; i < message.rendered.length; i++)
-            RenderedArticle.internalBinaryWrite(message.rendered[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
-        /* repeated ttab.baboon.RenderedArticle removed = 3; */
+            RenderedArticle.internalBinaryWrite(message.rendered[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* repeated ttab.baboon.RenderedArticle removed = 6; */
         for (let i = 0; i < message.removed.length; i++)
-            RenderedArticle.internalBinaryWrite(message.removed[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+            RenderedArticle.internalBinaryWrite(message.removed[i], writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* int64 article_version = 7; */
+        if (message.articleVersion !== 0n)
+            writer.tag(7, WireType.Varint).int64(message.articleVersion);
+        /* string time = 8; */
+        if (message.time !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.time);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -864,21 +1463,19 @@ class RenderedArticle$Type extends MessageType<RenderedArticle> {
     constructor() {
         super("ttab.baboon.RenderedArticle", [
             { no: 1, name: "date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "layout", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "position", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "download_link", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 5, name: "size", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 6, name: "sha256_hash", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "product", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "layout", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "position", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "pdf", kind: "message", T: () => RenderedAsset },
+            { no: 6, name: "tagged_text", kind: "message", T: () => RenderedAsset }
         ]);
     }
     create(value?: PartialMessage<RenderedArticle>): RenderedArticle {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.date = "";
+        message.product = "";
         message.layout = "";
         message.position = "";
-        message.downloadLink = "";
-        message.size = 0n;
-        message.sha256Hash = "";
         if (value !== undefined)
             reflectionMergePartial<RenderedArticle>(this, message, value);
         return message;
@@ -891,20 +1488,20 @@ class RenderedArticle$Type extends MessageType<RenderedArticle> {
                 case /* string date */ 1:
                     message.date = reader.string();
                     break;
-                case /* string layout */ 2:
+                case /* string product */ 2:
+                    message.product = reader.string();
+                    break;
+                case /* string layout */ 3:
                     message.layout = reader.string();
                     break;
-                case /* string position */ 3:
+                case /* string position */ 4:
                     message.position = reader.string();
                     break;
-                case /* string download_link */ 4:
-                    message.downloadLink = reader.string();
+                case /* ttab.baboon.RenderedAsset pdf */ 5:
+                    message.pdf = RenderedAsset.internalBinaryRead(reader, reader.uint32(), options, message.pdf);
                     break;
-                case /* int64 size */ 5:
-                    message.size = reader.int64().toBigInt();
-                    break;
-                case /* string sha256_hash */ 6:
-                    message.sha256Hash = reader.string();
+                case /* ttab.baboon.RenderedAsset tagged_text */ 6:
+                    message.taggedText = RenderedAsset.internalBinaryRead(reader, reader.uint32(), options, message.taggedText);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -921,21 +1518,21 @@ class RenderedArticle$Type extends MessageType<RenderedArticle> {
         /* string date = 1; */
         if (message.date !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.date);
-        /* string layout = 2; */
+        /* string product = 2; */
+        if (message.product !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.product);
+        /* string layout = 3; */
         if (message.layout !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.layout);
-        /* string position = 3; */
+            writer.tag(3, WireType.LengthDelimited).string(message.layout);
+        /* string position = 4; */
         if (message.position !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.position);
-        /* string download_link = 4; */
-        if (message.downloadLink !== "")
-            writer.tag(4, WireType.LengthDelimited).string(message.downloadLink);
-        /* int64 size = 5; */
-        if (message.size !== 0n)
-            writer.tag(5, WireType.Varint).int64(message.size);
-        /* string sha256_hash = 6; */
-        if (message.sha256Hash !== "")
-            writer.tag(6, WireType.LengthDelimited).string(message.sha256Hash);
+            writer.tag(4, WireType.LengthDelimited).string(message.position);
+        /* ttab.baboon.RenderedAsset pdf = 5; */
+        if (message.pdf)
+            RenderedAsset.internalBinaryWrite(message.pdf, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* ttab.baboon.RenderedAsset tagged_text = 6; */
+        if (message.taggedText)
+            RenderedAsset.internalBinaryWrite(message.taggedText, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -947,12 +1544,76 @@ class RenderedArticle$Type extends MessageType<RenderedArticle> {
  */
 export const RenderedArticle = new RenderedArticle$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class RenderedAsset$Type extends MessageType<RenderedAsset> {
+    constructor() {
+        super("ttab.baboon.RenderedAsset", [
+            { no: 5, name: "download_link", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "size", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 7, name: "sha256_hash", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<RenderedAsset>): RenderedAsset {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.downloadLink = "";
+        message.size = 0n;
+        message.sha256Hash = "";
+        if (value !== undefined)
+            reflectionMergePartial<RenderedAsset>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RenderedAsset): RenderedAsset {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string download_link */ 5:
+                    message.downloadLink = reader.string();
+                    break;
+                case /* int64 size */ 6:
+                    message.size = reader.int64().toBigInt();
+                    break;
+                case /* string sha256_hash */ 7:
+                    message.sha256Hash = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RenderedAsset, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string download_link = 5; */
+        if (message.downloadLink !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.downloadLink);
+        /* int64 size = 6; */
+        if (message.size !== 0n)
+            writer.tag(6, WireType.Varint).int64(message.size);
+        /* string sha256_hash = 7; */
+        if (message.sha256Hash !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.sha256Hash);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.RenderedAsset
+ */
+export const RenderedAsset = new RenderedAsset$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class CreateFlowRequest$Type extends MessageType<CreateFlowRequest> {
     constructor() {
         super("ttab.baboon.CreateFlowRequest", [
             { no: 1, name: "flow_uuid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "articles", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "articles", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "template_uuid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<CreateFlowRequest>): CreateFlowRequest {
@@ -960,6 +1621,7 @@ class CreateFlowRequest$Type extends MessageType<CreateFlowRequest> {
         message.flowUuid = "";
         message.date = "";
         message.articles = [];
+        message.templateUuid = "";
         if (value !== undefined)
             reflectionMergePartial<CreateFlowRequest>(this, message, value);
         return message;
@@ -977,6 +1639,9 @@ class CreateFlowRequest$Type extends MessageType<CreateFlowRequest> {
                     break;
                 case /* repeated string articles */ 3:
                     message.articles.push(reader.string());
+                    break;
+                case /* string template_uuid */ 4:
+                    message.templateUuid = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -999,6 +1664,9 @@ class CreateFlowRequest$Type extends MessageType<CreateFlowRequest> {
         /* repeated string articles = 3; */
         for (let i = 0; i < message.articles.length; i++)
             writer.tag(3, WireType.LengthDelimited).string(message.articles[i]);
+        /* string template_uuid = 4; */
+        if (message.templateUuid !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.templateUuid);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2489,7 +3157,8 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
             { no: 5, name: "png_width", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 6, name: "png_height", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 7, name: "images", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => MountedImage },
-            { no: 8, name: "overflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Overflow }
+            { no: 8, name: "overflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Overflow },
+            { no: 9, name: "tagged_text_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<RenderArticleResponse>): RenderArticleResponse {
@@ -2502,6 +3171,7 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
         message.pngHeight = 0;
         message.images = [];
         message.overflows = [];
+        message.taggedTextUrl = "";
         if (value !== undefined)
             reflectionMergePartial<RenderArticleResponse>(this, message, value);
         return message;
@@ -2534,6 +3204,9 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
                     break;
                 case /* repeated ttab.baboon.Overflow overflows */ 8:
                     message.overflows.push(Overflow.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* string tagged_text_url */ 9:
+                    message.taggedTextUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -2571,6 +3244,9 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
         /* repeated ttab.baboon.Overflow overflows = 8; */
         for (let i = 0; i < message.overflows.length; i++)
             Overflow.internalBinaryWrite(message.overflows[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* string tagged_text_url = 9; */
+        if (message.taggedTextUrl !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.taggedTextUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3046,5 +3722,8 @@ export const Print = new ServiceType("ttab.baboon.Print", [
     { name: "CreateFlow", options: {}, I: CreateFlowRequest, O: CreateFlowResponse },
     { name: "CopyArticleToFlow", options: {}, I: CopyArticleToFlowRequest, O: CopyArticleToFlowResponse },
     { name: "GetScribusInfo", options: {}, I: GetScribusInfoRequest, O: GetScribusInfoResponse },
-    { name: "GetRenderedArticles", options: {}, I: GetRenderedArticlesRequest, O: GetRenderedArticlesResponse }
+    { name: "GetRenderedArticles", options: {}, I: GetRenderedArticlesRequest, O: GetRenderedArticlesResponse },
+    { name: "SetHypenation", options: {}, I: SetHypenationRequest, O: SetHypenationResponse },
+    { name: "ListHypenations", options: {}, I: ListHypenationsRequest, O: ListHypenationsResponse },
+    { name: "RemoveHypenation", options: {}, I: RemoveHypenationRequest, O: RemoveHypenationResponse }
 ]);
