@@ -707,6 +707,12 @@ export interface RenderArticleResponse {
      * @generated from protobuf field: string tagged_text_url = 9;
      */
     taggedTextUrl: string;
+    /**
+     * Underflows is a list of text frames whose contents underflowed.
+     *
+     * @generated from protobuf field: repeated ttab.baboon.Underflow underflows = 10;
+     */
+    underflows: Underflow[];
 }
 /**
  * @generated from protobuf message ttab.baboon.MountedImage
@@ -738,6 +744,24 @@ export interface MountedImage {
 export interface Overflow {
     /**
      * Frame name that overflowed.
+     *
+     * @generated from protobuf field: string frame = 1;
+     */
+    frame: string;
+    /**
+     * BoundingBox for the frame in 0.0-1.0 coordinates relative to the page width
+     * and height.
+     *
+     * @generated from protobuf field: ttab.baboon.Rect bounding_box = 2;
+     */
+    boundingBox?: Rect;
+}
+/**
+ * @generated from protobuf message ttab.baboon.Underflow
+ */
+export interface Underflow {
+    /**
+     * Frame name that underflowed.
      *
      * @generated from protobuf field: string frame = 1;
      */
@@ -844,6 +868,12 @@ export interface LayoutPreviewResponse {
      * @generated from protobuf field: bytes scribus_doc = 4;
      */
     scribusDoc: Uint8Array;
+    /**
+     * Underflows is a list of text frames whose contents underflowed.
+     *
+     * @generated from protobuf field: repeated ttab.baboon.Underflow underflows = 5;
+     */
+    underflows: Underflow[];
 }
 /**
  * @generated from protobuf enum ttab.baboon.FrameType
@@ -3158,7 +3188,8 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
             { no: 6, name: "png_height", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 7, name: "images", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => MountedImage },
             { no: 8, name: "overflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Overflow },
-            { no: 9, name: "tagged_text_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 9, name: "tagged_text_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "underflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Underflow }
         ]);
     }
     create(value?: PartialMessage<RenderArticleResponse>): RenderArticleResponse {
@@ -3172,6 +3203,7 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
         message.images = [];
         message.overflows = [];
         message.taggedTextUrl = "";
+        message.underflows = [];
         if (value !== undefined)
             reflectionMergePartial<RenderArticleResponse>(this, message, value);
         return message;
@@ -3207,6 +3239,9 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
                     break;
                 case /* string tagged_text_url */ 9:
                     message.taggedTextUrl = reader.string();
+                    break;
+                case /* repeated ttab.baboon.Underflow underflows */ 10:
+                    message.underflows.push(Underflow.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3247,6 +3282,9 @@ class RenderArticleResponse$Type extends MessageType<RenderArticleResponse> {
         /* string tagged_text_url = 9; */
         if (message.taggedTextUrl !== "")
             writer.tag(9, WireType.LengthDelimited).string(message.taggedTextUrl);
+        /* repeated ttab.baboon.Underflow underflows = 10; */
+        for (let i = 0; i < message.underflows.length; i++)
+            Underflow.internalBinaryWrite(message.underflows[i], writer.tag(10, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3373,6 +3411,60 @@ class Overflow$Type extends MessageType<Overflow> {
  * @generated MessageType for protobuf message ttab.baboon.Overflow
  */
 export const Overflow = new Overflow$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Underflow$Type extends MessageType<Underflow> {
+    constructor() {
+        super("ttab.baboon.Underflow", [
+            { no: 1, name: "frame", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "bounding_box", kind: "message", T: () => Rect }
+        ]);
+    }
+    create(value?: PartialMessage<Underflow>): Underflow {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.frame = "";
+        if (value !== undefined)
+            reflectionMergePartial<Underflow>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Underflow): Underflow {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string frame */ 1:
+                    message.frame = reader.string();
+                    break;
+                case /* ttab.baboon.Rect bounding_box */ 2:
+                    message.boundingBox = Rect.internalBinaryRead(reader, reader.uint32(), options, message.boundingBox);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Underflow, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string frame = 1; */
+        if (message.frame !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.frame);
+        /* ttab.baboon.Rect bounding_box = 2; */
+        if (message.boundingBox)
+            Rect.internalBinaryWrite(message.boundingBox, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.baboon.Underflow
+ */
+export const Underflow = new Underflow$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Rect$Type extends MessageType<Rect> {
     constructor() {
@@ -3637,7 +3729,8 @@ class LayoutPreviewResponse$Type extends MessageType<LayoutPreviewResponse> {
             { no: 1, name: "pdf_data", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
             { no: 2, name: "images", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => MountedImage },
             { no: 3, name: "overflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Overflow },
-            { no: 4, name: "scribus_doc", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+            { no: 4, name: "scribus_doc", kind: "scalar", T: 12 /*ScalarType.BYTES*/ },
+            { no: 5, name: "underflows", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Underflow }
         ]);
     }
     create(value?: PartialMessage<LayoutPreviewResponse>): LayoutPreviewResponse {
@@ -3646,6 +3739,7 @@ class LayoutPreviewResponse$Type extends MessageType<LayoutPreviewResponse> {
         message.images = [];
         message.overflows = [];
         message.scribusDoc = new Uint8Array(0);
+        message.underflows = [];
         if (value !== undefined)
             reflectionMergePartial<LayoutPreviewResponse>(this, message, value);
         return message;
@@ -3666,6 +3760,9 @@ class LayoutPreviewResponse$Type extends MessageType<LayoutPreviewResponse> {
                     break;
                 case /* bytes scribus_doc */ 4:
                     message.scribusDoc = reader.bytes();
+                    break;
+                case /* repeated ttab.baboon.Underflow underflows */ 5:
+                    message.underflows.push(Underflow.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3691,6 +3788,9 @@ class LayoutPreviewResponse$Type extends MessageType<LayoutPreviewResponse> {
         /* bytes scribus_doc = 4; */
         if (message.scribusDoc.length)
             writer.tag(4, WireType.LengthDelimited).bytes(message.scribusDoc);
+        /* repeated ttab.baboon.Underflow underflows = 5; */
+        for (let i = 0; i < message.underflows.length; i++)
+            Underflow.internalBinaryWrite(message.underflows[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
