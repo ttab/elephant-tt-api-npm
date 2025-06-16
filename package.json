@@ -10,6 +10,11 @@
       "import": "./dist/baboon/index.js",
       "require": "./dist/baboon/index.cjs"
     },
+    "./eidos": {
+      "types": "./dist/eidos/index.d.ts",
+      "import": "./dist/eidos/index.js",
+      "require": "./dist/eidos/index.cjs"
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -22,7 +27,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:baboon": "tsup ./src/baboon/index.ts --format cjs,esm --dts --outDir ./dist/baboon",
-    "build": "npm run build:baboon",
+    "build:eidos": "tsup ./src/eidos/index.ts --format cjs,esm --dts --outDir ./dist/eidos",
+    "build": "npm run build:baboon && npm run build:eidos",
     "update": "bash .github/workflows/update.sh",
     "prepublish": "npm run build"
   },
