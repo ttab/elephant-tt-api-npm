@@ -6,14 +6,74 @@
   "type": "module",
   "exports": {
     "./baboon": {
-      "types": "./dist/baboon/index.d.ts",
-      "import": "./dist/baboon/index.js",
-      "require": "./dist/baboon/index.cjs"
+      "import": {
+        "types": "./dist/baboon/index.d.mts",
+        "default": "./dist/baboon/index.mjs"
+      },
+      "require": {
+        "types": "./dist/baboon/index.d.cts",
+        "default": "./dist/baboon/index.cjs"
+      }
     },
     "./eidos": {
-      "types": "./dist/eidos/index.d.ts",
-      "import": "./dist/eidos/index.js",
-      "require": "./dist/eidos/index.cjs"
+      "import": {
+        "types": "./dist/eidos/index.d.mts",
+        "default": "./dist/eidos/index.mjs"
+      },
+      "require": {
+        "types": "./dist/eidos/index.d.cts",
+        "default": "./dist/eidos/index.cjs"
+      }
+    },
+    "./everysport": {
+      "import": {
+        "types": "./dist/everysport/index.d.mts",
+        "default": "./dist/everysport/index.mjs"
+      },
+      "require": {
+        "types": "./dist/everysport/index.d.cts",
+        "default": "./dist/everysport/index.cjs"
+      }
+    },
+    "./genai": {
+      "import": {
+        "types": "./dist/genai/index.d.mts",
+        "default": "./dist/genai/index.mjs"
+      },
+      "require": {
+        "types": "./dist/genai/index.d.cts",
+        "default": "./dist/genai/index.cjs"
+      }
+    },
+    "./newsdoc": {
+      "import": {
+        "types": "./dist/newsdoc/index.d.mts",
+        "default": "./dist/newsdoc/index.mjs"
+      },
+      "require": {
+        "types": "./dist/newsdoc/index.d.cts",
+        "default": "./dist/newsdoc/index.cjs"
+      }
+    },
+    "./ntb": {
+      "import": {
+        "types": "./dist/ntb/index.d.mts",
+        "default": "./dist/ntb/index.mjs"
+      },
+      "require": {
+        "types": "./dist/ntb/index.d.cts",
+        "default": "./dist/ntb/index.cjs"
+      }
+    },
+    "./wires": {
+      "import": {
+        "types": "./dist/wires/index.d.mts",
+        "default": "./dist/wires/index.mjs"
+      },
+      "require": {
+        "types": "./dist/wires/index.d.cts",
+        "default": "./dist/wires/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -26,9 +86,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:baboon": "tsup ./src/baboon/index.ts --format cjs,esm --dts --outDir ./dist/baboon",
-    "build:eidos": "tsup ./src/eidos/index.ts --format cjs,esm --dts --outDir ./dist/eidos",
-    "build": "npm run build:baboon && npm run build:eidos",
+    "build:baboon": "tsdown ./src/baboon/index.ts --format cjs,esm --dts --outDir ./dist/baboon",
+    "build:eidos": "tsdown ./src/eidos/index.ts --format cjs,esm --dts --outDir ./dist/eidos",
+    "build:everysport": "tsdown ./src/everysport/index.ts --format cjs,esm --dts --outDir ./dist/everysport",
+    "build:genai": "tsdown ./src/genai/index.ts --format cjs,esm --dts --outDir ./dist/genai",
+    "build:newsdoc": "tsdown ./src/newsdoc/index.ts --format cjs,esm --dts --outDir ./dist/newsdoc",
+    "build:ntb": "tsdown ./src/ntb/index.ts --format cjs,esm --dts --outDir ./dist/ntb",
+    "build:wires": "tsdown ./src/wires/index.ts --format cjs,esm --dts --outDir ./dist/wires",
+    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:newsdoc && npm run build:ntb && npm run build:wires",
     "update": "bash .github/workflows/update.sh",
     "prepublish": "npm run build"
   },
@@ -36,13 +101,13 @@
   "description": "",
   "devDependencies": {
     "@protobuf-ts/plugin": "^2.11.1",
-    "tsup": "^8.5.1"
+    "tsdown": "^0.20.3"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@protobuf-ts/runtime": "^2.11.1",
-    "@protobuf-ts/runtime-rpc": "^2.9.6"
+    "@protobuf-ts/runtime-rpc": "^2.11.1"
   }
 }
