@@ -45,16 +45,6 @@
         "default": "./dist/genai/index.cjs"
       }
     },
-    "./newsdoc": {
-      "import": {
-        "types": "./dist/newsdoc/index.d.mts",
-        "default": "./dist/newsdoc/index.mjs"
-      },
-      "require": {
-        "types": "./dist/newsdoc/index.d.cts",
-        "default": "./dist/newsdoc/index.cjs"
-      }
-    },
     "./ntb": {
       "import": {
         "types": "./dist/ntb/index.d.mts",
@@ -90,10 +80,9 @@
     "build:eidos": "tsdown ./src/eidos/index.ts --format cjs,esm --dts --outDir ./dist/eidos",
     "build:everysport": "tsdown ./src/everysport/index.ts --format cjs,esm --dts --outDir ./dist/everysport",
     "build:genai": "tsdown ./src/genai/index.ts --format cjs,esm --dts --outDir ./dist/genai",
-    "build:newsdoc": "tsdown ./src/newsdoc/index.ts --format cjs,esm --dts --outDir ./dist/newsdoc",
     "build:ntb": "tsdown ./src/ntb/index.ts --format cjs,esm --dts --outDir ./dist/ntb",
     "build:wires": "tsdown ./src/wires/index.ts --format cjs,esm --dts --outDir ./dist/wires",
-    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:newsdoc && npm run build:ntb && npm run build:wires",
+    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:ntb && npm run build:wires",
     "update": "bash .github/workflows/update.sh",
     "prepublish": "npm run build"
   },
