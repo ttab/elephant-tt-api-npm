@@ -26,7 +26,7 @@ if [ -z "$tag" ]; then
 
     git -C $checkout checkout $tag >/dev/null 2>&1
 else
-    git clone --depth 1 --branch $tag $src_repo
+    git clone --depth 1 --branch $tag $src_repo $checkout
 fi
 
 # Check if the tag already exists in the current repo.
@@ -61,7 +61,7 @@ done
 # Build the docker image, just temporary, should live in a separate repo.
 docker buildx build \
        -t node-protobuf --load \
-       --build-arg="protoc_version=24.4-r1" ./src
+       --build-arg="protoc_version=31.1-r1" ./src
 
 docker run --rm \
        -v "$(pwd):/usr/src" \
