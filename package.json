@@ -65,6 +65,36 @@
         "default": "./dist/wires/index.cjs"
       }
     },
+    "./hub": {
+      "import": {
+        "types": "./dist/hub/index.d.mts",
+        "default": "./dist/hub/index.mjs"
+      },
+      "require": {
+        "types": "./dist/hub/index.d.cts",
+        "default": "./dist/hub/index.cjs"
+      }
+    },
+    "./reportingstream": {
+      "import": {
+        "types": "./dist/reportingstream/index.d.mts",
+        "default": "./dist/reportingstream/index.mjs"
+      },
+      "require": {
+        "types": "./dist/reportingstream/index.d.cts",
+        "default": "./dist/reportingstream/index.cjs"
+      }
+    },
+    "./intelligence": {
+      "import": {
+        "types": "./dist/intelligence/index.d.mts",
+        "default": "./dist/intelligence/index.mjs"
+      },
+      "require": {
+        "types": "./dist/intelligence/index.d.cts",
+        "default": "./dist/intelligence/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -82,7 +112,10 @@
     "build:genai": "tsdown ./src/genai/index.ts --format cjs,esm --dts --outDir ./dist/genai",
     "build:ntb": "tsdown ./src/ntb/index.ts --format cjs,esm --dts --outDir ./dist/ntb",
     "build:wires": "tsdown ./src/wires/index.ts --format cjs,esm --dts --outDir ./dist/wires",
-    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:ntb && npm run build:wires",
+    "build:hub": "tsdown ./src/hub/index.ts --format cjs,esm --dts --outDir ./dist/hub",
+    "build:reportingstream": "tsdown ./src/reportingstream/index.ts --format cjs,esm --dts --outDir ./dist/reportingstream",
+    "build:intelligence": "tsdown ./src/intelligence/index.ts --format cjs,esm --dts --outDir ./dist/intelligence",
+    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:ntb && npm run build:wires && npm run build:hub && npm run build:reportingstream && npm run build:intelligence",
     "update": "bash .github/workflows/update.sh",
     "prepublish": "npm run build"
   },

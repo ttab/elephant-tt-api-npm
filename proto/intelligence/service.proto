@@ -1,0 +1,488 @@
+syntax = "proto3";
+
+import "newsdoc/newsdoc.proto";
+
+package ttab.intelligence;
+
+option go_package = "github.com/ttab/elephant-tt-api/intelligence";
+
+// Generate provides AI-powered content generation from text inputs.
+service Generate {
+  // DocumentFromText creates a document from an input text.
+  rpc DocumentFromText(DocumentFromTextRequest) returns (DocumentFromTextResponse);
+
+  // LanguageFeedback gives feedback on a text.
+  rpc LanguageFeedback(LanguageFeedbackRequest) returns (LanguageFeedbackResponse);
+
+  // Text generates text from a input.
+  rpc Text(TextRequest) returns (TextResponse);
+
+  // ListJobs that have been submitted.
+  rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
+  // WaitForJobs is used to wait for status updates for a set of jobs.
+  rpc WaitForJobs(WaitForJobsRequest) returns (WaitForJobsResponse);
+  // GetResult returns the result for a job.
+  rpc GetResult(GetResultRequest) returns (GetResultResponse);
+}
+
+// Translate manages translation models and their configuration.
+service Translate {
+  // GetTranslationModels lists all available translation models.
+  rpc GetTranslationModels(GetTranslationModelsRequest) returns (GetTranslationModelsResponse);
+  // ConfigureGenerativeTranslator creates or updates a generative translation
+  // model configuration.
+  rpc ConfigureGenerativeTranslator(ConfigureGenerativeTranslatorRequest) returns (ConfigureGenerativeTranslatorResponse);
+  // RemoveGenerativeTranslator removes a generative translation model
+  // configuration.
+  rpc RemoveGenerativeTranslator(RemoveGenerativeTranslatorRequest) returns (RemoveGenerativeTranslatorResponse);
+
+  // TranslateDocument translates the content of a document to a target
+  // language. Returns the translated document with original content
+  // preserved in a meta block.
+  rpc TranslateDocument(TranslateDocumentRequest) returns (TranslateDocumentResponse);
+}
+
+// Embeddings provides semantic search across embedded documents.
+service Embeddings {
+  // Search performs a semantic search across embedded documents.
+  rpc Search(SemanticSearchRequest) returns (SemanticSearchResponse);
+}
+
+message SemanticSearchRequest {
+  // Query text to find similar documents for.
+  string query = 1;
+  // DocumentTypes to filter by (e.g. "core/article", "tt/wire").
+  repeated string document_types = 2;
+  // ContentBlockTypes to filter by (e.g. "core/factbox").
+  repeated string content_block_types = 3;
+  // Limit is the maximum number of results to return.
+  int32 limit = 4;
+  // HotOnly restricts search to the hot (recent) table.
+  bool hot_only = 5;
+  // Nprobes controls IVFFlat probe count for cold index queries.
+  // Higher values improve recall at the cost of latency. Optional,
+  // defaults to server-configured value.
+  int32 nprobes = 6;
+}
+
+message SemanticSearchResponse {
+  repeated SemanticSearchResult results = 1;
+}
+
+message SemanticSearchResult {
+  // UUID of the matching document.
+  string document_uuid = 1;
+  // Type of the document (e.g. "core/article").
+  string document_type = 2;
+  // Title of the document.
+  string title = 3;
+  // Cosine similarity score.
+  float score = 4;
+  // Content block types present in the document.
+  repeated string content_block_types = 5;
+}
+
+// Prompts provides management and testing of prompt documents.
+service Prompts {
+  // ListPrompts lists prompt documents from the repository.
+  rpc ListPrompts(ListPromptsRequest) returns (ListPromptsResponse);
+  // GetPrompt retrieves a prompt document with its rendered content.
+  rpc GetPrompt(GetPromptRequest) returns (GetPromptResponse);
+  // TestPrompt runs a prompt with test input and returns the result.
+  rpc TestPrompt(TestPromptRequest) returns (TestPromptResponse);
+}
+
+message ListPromptsRequest {}
+
+message ListPromptsResponse {
+  repeated PromptInfo prompts = 1;
+}
+
+// PromptInfo is a summary of a prompt document.
+message PromptInfo {
+  // UUID of the prompt document.
+  string uuid = 1;
+  // Title of the prompt.
+  string title = 2;
+  // Model URI configured for the prompt.
+  string model = 3;
+}
+
+message GetPromptRequest {
+  // UUID of the prompt document to retrieve.
+  string uuid = 1;
+}
+
+message GetPromptResponse {
+  // Document is the prompt document.
+  newsdoc.Document document = 1;
+  // RenderedPrompt is the prompt text with all snippet includes resolved.
+  string rendered_prompt = 2;
+  // Variables are the template variable names found in the prompt.
+  repeated string variables = 3;
+}
+
+message TestPromptRequest {
+  // UUID of the prompt document to test.
+  string uuid = 1;
+  // Model override. Optional, uses the prompt's configured model if empty.
+  string model = 2;
+  // Variables to substitute into the prompt template.
+  map<string, string> variables = 3;
+}
+
+message TestPromptResponse {
+  // Result is the raw model output.
+  string result = 1;
+  // RenderedPrompt is the prompt that was sent to the model after variable
+  // substitution.
+  string rendered_prompt = 2;
+}
+
+message TranslateDocumentRequest {
+  // Model name to use for translation (maps to DeepL or a generative
+  // translator).
+  string model = 1;
+  // Document to translate.
+  newsdoc.Document document = 2;
+  // TargetLanguage is the BCP47 language tag to translate to.
+  string target_language = 3;
+}
+
+message TranslateDocumentResponse {
+  // Document with translated content blocks and originals stored in a
+  // meta block.
+  newsdoc.Document document = 1;
+  // DetectedSourceLanguage is the language detected in the source
+  // content.
+  string detected_source_language = 2;
+}
+
+message ConfigureGenerativeTranslatorRequest {
+  // Name of the translation model.
+  string name  = 1;
+  // Model is the URI of the model to use.
+  string model = 2;
+}
+
+message ConfigureGenerativeTranslatorResponse {}
+
+message RemoveGenerativeTranslatorRequest {
+  // Name of the translation model.
+  string name  = 1;
+}
+
+message RemoveGenerativeTranslatorResponse {}
+
+message GetTranslationModelsRequest {}
+
+message GetTranslationModelsResponse {
+  // Available translation models.
+  repeated TranslationModelInfo models = 1;
+}
+
+// TranslationModelInfo describes a configured translation model.
+message TranslationModelInfo {
+  // Name of the translation model.
+  string name = 1;
+  // Model used for translation.
+  string model = 2;
+}
+
+message DocumentFromTextRequest {
+  // Model is the URI of the model to use.
+  string model       = 1;
+  // Text to send as input.
+  string text        = 2;
+  // UUID to set for the document.
+  string uuid        = 3;
+  // URI to set for the document.
+  string uri         = 4;
+  // AdditionalLinks that should be added to the generated document.
+  repeated newsdoc.Block additionalLinks = 5;
+  // AdditionalMeta blocks that should be added to the generated document.
+  repeated newsdoc.Block additionalMeta  = 6;
+  // AsyncTimeoutSeconds is the time after which a JobID will be returned
+  // instead of a direct result. Optional, defaults to no timeout.
+  int64 async_timeout_seconds            = 7;
+}
+
+message DocumentFromTextResponse {
+  // JobID that identifies the job.
+  int64 job_id              = 1;
+  // Document that was generated.
+  newsdoc.Document document = 2;
+}
+
+message LanguageFeedbackRequest {
+  // Model is the URI of the model to use.
+  string model                = 1;
+  // Paragraphs to review. Feedback will reference these paragraphs by
+  // index. Optional, but either paragraphs, document_uuid, or document must be
+  // set.
+  repeated string paragraphs  = 2;
+  // DocumentUUID of the document to give feedback on. The "core/text" content
+  // blocks will be extracted and the feedback will reference them by
+  // index. Optional, but either paragraphs, document_uuid, or document must be
+  // set.
+  string document_uuid        = 3;
+  // Document is the document to give feedback on. The "core/text" content
+  // blocks will be extracted and the feedback will reference them by
+  // index. Optional, but either paragraphs, document_uuid, or document must be
+  // set.
+  newsdoc.Document document   = 4;
+  // AsyncTimeoutSeconds is the time after which a JobID will be returned
+  // instead of a direct result. Optional, defaults to no timeout.
+  int64 async_timeout_seconds = 5;
+}
+
+message LanguageFeedbackResponse {
+  // JobID that identifies the created job.
+  int64 job_id = 1;
+  // Feedback items.
+  repeated LanguageFeedback feedback = 2;
+  // Paragraphs are the paragraphs being referenced in the feedback.
+  repeated string paragraphs         = 3;
+}
+
+message LanguageFeedback {
+  // Paragraph index. Set to -1 if the feedback couldn't be connected to a
+  // specific paragraph.
+  int64 paragraph     = 1;
+  // Original text excerpt.
+  string original     = 2;
+  // Suggestion for new text.
+  string suggestion   = 4;
+  // Motivation for the change.
+  string motivation   = 5;
+  // ParagraphID is present when the feedback is performed on a document and the
+  // text block had a ID.
+  string paragraph_id = 6;
+}
+
+message TextRequest {
+  // Model is the URI of the model to use.
+  string model          = 1;
+  // Text to send as input.
+  string text           = 2;
+  // ParseText tries to parse the generated text into blocks if set to true.
+  bool parse_text       = 3;
+  // CharacterCount sets a target for how long the generated text should be.
+  int32 character_count = 4;
+  // AsyncTimeoutSeconds is the time after which a JobID will be returned
+  // instead of a direct result. Optional, defaults to no timeout.
+  int64 async_timeout_seconds = 5;
+}
+
+message TextResponse {
+  // JobID that identifies the created job.
+  int64 job_id = 1;
+  // Text is the generated text.
+  string text  = 2;
+  // Content blocks generated from the text.
+  repeated newsdoc.Block content = 3;
+}
+
+message ListJobsRequest {
+  // After lists jobs after the given ID. Optional, omit to get latest.
+  int64 after = 1;
+}
+
+message ListJobsResponse {
+  // Jobs matching the list request.
+  repeated JobReference jobs = 1;
+}
+
+message WaitForJobsRequest {
+  // Jobs and the currently known version that the client is waiting
+  // for. Required.
+  map<int64, int64> jobs = 1;
+  // MaxWaitSec is the maximum time to wait for updates. Optional, defaults to
+  // 10.
+  int64 max_wait_sec = 2;
+}
+
+message WaitForJobsResponse {
+  // Updated jobs, can be empty if the wait timed out without any updates.
+  repeated JobReference updated = 1;
+}
+
+message GetResultRequest {
+  // ID of the job to get the result for.
+  int64 id = 1;
+}
+
+// JobStatus describes the current state of a job.
+enum JobStatus {
+  // STATUS_UNKNOWN is the default zero value.
+  STATUS_UNKNOWN = 0;
+  // STATUS_DONE indicates that the job completed successfully.
+  STATUS_DONE    = 1;
+  // STATUS_FAILED indicates that the job failed.
+  STATUS_FAILED  = 2;
+}
+
+// JobType identifies what kind of generation job was requested.
+enum JobType {
+  // JOB_TYPE_UNKNOWN is the default zero value.
+  JOB_TYPE_UNKNOWN  = 0;
+  // JOB_TYPE_DOCUMENT is a DocumentFromText job.
+  JOB_TYPE_DOCUMENT = 1;
+  // JOB_TYPE_FEEDBACK is a LanguageFeedback job.
+  JOB_TYPE_FEEDBACK = 2;
+  // JOB_TYPE_TEXT is a Text generation job.
+  JOB_TYPE_TEXT     = 3;
+}
+
+// JobReference is a summary of a job's current state.
+message JobReference {
+  // ID of the job.
+  int64 id          = 1;
+  // Status of the job.
+  JobStatus status  = 2;
+}
+
+// GetResultResponse contains the full result of a completed job.
+message GetResultResponse {
+  // ID of the job.
+  int64 id          = 1;
+  // Model URI that was used.
+  string model     = 2;
+  // Type of the job.
+  JobType type      = 3;
+  // Status of the job.
+  JobStatus status  = 4;
+  // ErrorCode is set when the job failed.
+  string error_code = 5;
+  // Error message when the job failed.
+  string error      = 6;
+  // Document result, set for JOB_TYPE_DOCUMENT jobs.
+  newsdoc.Document document = 7;
+  // Feedback result, set for JOB_TYPE_FEEDBACK jobs.
+  LanguageFeedback feedback = 8;
+}
+
+// Comments provides threaded commenting for research documents.
+service Comments {
+  // PostComment posts a comment to a thread. If thread_uuid is empty, a new
+  // thread is created.
+  rpc PostComment(PostCommentRequest) returns (PostCommentResponse);
+  // GetThread returns a thread with all its comments and replies.
+  rpc GetThread(GetThreadRequest) returns (GetThreadResponse);
+  // ListThreads returns metadata for the given thread UUIDs.
+  rpc ListThreads(ListThreadsRequest) returns (ListThreadsResponse);
+  // GetComment returns a single comment.
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  // DeleteComment soft-deletes a comment.
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
+  // SetThreadACL replaces the access control list for a thread.
+  rpc SetThreadACL(SetThreadACLRequest) returns (SetThreadACLResponse);
+}
+
+// CommentACLEntry grants permissions to a subject or unit URI.
+message CommentACLEntry {
+  // URI of the grantee.
+  string uri                    = 1;
+  // Permissions granted: "r" (read) and/or "w" (write).
+  repeated string permissions   = 2;
+}
+
+// Comment is a single comment in a thread.
+message Comment {
+  // UUID of the comment.
+  string uuid         = 1;
+  // UUID of the thread this comment belongs to.
+  string thread_uuid  = 2;
+  // UUID of the parent comment for replies. Empty for top-level comments.
+  string parent_uuid  = 3;
+  // URI identifying the author.
+  string author_uri   = 4;
+  // Display name of the author.
+  string author_name  = 5;
+  // Text content of the comment.
+  string text         = 6;
+  // Creation timestamp (RFC 3339).
+  string created_at   = 7;
+  // Soft-delete timestamp (RFC 3339). Empty if not deleted.
+  string deleted_at   = 8;
+  // Replies to this comment. Only populated in GetThread responses.
+  repeated Comment replies = 9;
+}
+
+// CommentThread is the metadata for a comment thread.
+message CommentThread {
+  // UUID of the thread.
+  string uuid       = 1;
+  // Creation timestamp (RFC 3339).
+  string created_at = 2;
+  // Last update timestamp (RFC 3339).
+  string updated_at = 3;
+  // Access control list for the thread.
+  repeated CommentACLEntry acl = 4;
+}
+
+message PostCommentRequest {
+  // UUID of the thread to post to. Empty to create a new thread.
+  string thread_uuid          = 1;
+  // UUID of the parent comment for replies. Empty for top-level comments.
+  string parent_uuid          = 2;
+  // Text content of the comment.
+  string text                 = 3;
+  // Initial ACL entries. Only used when creating a new thread.
+  repeated CommentACLEntry acl = 4;
+}
+
+message PostCommentResponse {
+  // UUID of the thread (new or existing).
+  string thread_uuid  = 1;
+  // UUID of the created comment.
+  string comment_uuid = 2;
+}
+
+message GetThreadRequest {
+  // UUID of the thread.
+  string thread_uuid = 1;
+}
+
+message GetThreadResponse {
+  // Thread metadata.
+  CommentThread thread       = 1;
+  // Top-level comments with replies nested.
+  repeated Comment comments  = 2;
+}
+
+message GetCommentRequest {
+  // UUID of the comment.
+  string comment_uuid = 1;
+}
+
+message GetCommentResponse {
+  // The comment.
+  Comment comment = 1;
+}
+
+message DeleteCommentRequest {
+  // UUID of the comment to soft-delete.
+  string comment_uuid = 1;
+}
+
+message DeleteCommentResponse {}
+
+message ListThreadsRequest {
+  // UUIDs of the threads to fetch.
+  repeated string thread_uuids = 1;
+}
+
+message ListThreadsResponse {
+  // Threads the caller has read access to.
+  repeated CommentThread threads = 1;
+}
+
+message SetThreadACLRequest {
+  // UUID of the thread.
+  string thread_uuid          = 1;
+  // New ACL entries, replaces the existing ACL.
+  repeated CommentACLEntry acl = 2;
+}
+
+message SetThreadACLResponse {}
