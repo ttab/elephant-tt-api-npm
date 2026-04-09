@@ -653,6 +653,292 @@ export interface SortField {
      */
     name: string;
 }
+/**
+ * @generated from protobuf message ttab.ntb.StringList
+ */
+export interface StringList {
+    /**
+     * @generated from protobuf field: repeated string values = 1
+     */
+    values: string[];
+}
+/**
+ * @generated from protobuf message ttab.ntb.StringMap
+ */
+export interface StringMap {
+    /**
+     * @generated from protobuf field: map<string, string> entries = 1
+     */
+    entries: {
+        [key: string]: string;
+    };
+}
+/**
+ * PreferenceValue represents a language preference setting. It can be a
+ * boolean to enable/disable a form, or a list of specific words to include or
+ * exclude. Prefix a word with "-" to exclude it from the form.
+ *
+ * @generated from protobuf message ttab.ntb.PreferenceValue
+ */
+export interface PreferenceValue {
+    /**
+     * @generated from protobuf oneof: value
+     */
+    value: {
+        oneofKind: "enabled";
+        /**
+         * @generated from protobuf field: bool enabled = 1
+         */
+        enabled: boolean;
+    } | {
+        oneofKind: "words";
+        /**
+         * @generated from protobuf field: ttab.ntb.StringList words = 2
+         */
+        words: StringList;
+    } | {
+        oneofKind: undefined;
+    };
+}
+// Nynorsk Request/Response Messages
+
+/**
+ * @generated from protobuf message ttab.ntb.TranslateRequest
+ */
+export interface TranslateRequest {
+    /**
+     * The document content to translate.
+     *
+     * @generated from protobuf oneof: document
+     */
+    document: {
+        oneofKind: "text";
+        /**
+         * A single document as plain text or base64-encoded binary.
+         *
+         * @generated from protobuf field: string text = 1
+         */
+        text: string;
+    } | {
+        oneofKind: "texts";
+        /**
+         * Multiple document fragments as a list, translated in order.
+         *
+         * @generated from protobuf field: ttab.ntb.StringList texts = 2
+         */
+        texts: StringList;
+    } | {
+        oneofKind: "textMap";
+        /**
+         * Multiple document fragments as named key-value pairs.
+         *
+         * @generated from protobuf field: ttab.ntb.StringMap text_map = 3
+         */
+        textMap: StringMap;
+    } | {
+        oneofKind: undefined;
+    };
+    /**
+     * The document format (e.g. "html", "txt", "docx", "json"). Defaults to
+     * "html".
+     *
+     * @generated from protobuf field: string file_type = 4
+     */
+    fileType: string;
+    /**
+     * Controls translation of text inside HTML lang-tagged elements. Only
+     * applies when file_type is "html".
+     *
+     * @generated from protobuf field: ttab.ntb.LangParameterTranslate lang_parameter_translate = 5
+     */
+    langParameterTranslate: LangParameterTranslate;
+    /**
+     * A preference template name ("standard", "tradisjonell", or "moderne").
+     * Can be combined with individual prefs.
+     *
+     * @generated from protobuf field: string prefs_template = 6
+     */
+    prefsTemplate: string;
+    /**
+     * Optional GUID to identify this document for translation tracking. If
+     * empty, the service generates one.
+     *
+     * @generated from protobuf field: string guid = 7
+     */
+    guid: string;
+    /**
+     * Source language as an ISO 639-1 code, optionally with a region subtag
+     * (e.g. "nb", "nb-no", "nn", "sv", "da"). Defaults to "nb".
+     *
+     * @generated from protobuf field: string source_language = 8
+     */
+    sourceLanguage: string;
+    /**
+     * Target language as an ISO 639-1 code, optionally with a region subtag
+     * (e.g. "nn", "nb", "sv", "da"). Defaults to "nn".
+     *
+     * @generated from protobuf field: string target_language = 9
+     */
+    targetLanguage: string;
+    /**
+     * Enable AI-assisted post-editing of the translation.
+     *
+     * @generated from protobuf field: bool post_edit = 10
+     */
+    postEdit: boolean;
+    /**
+     * Optional language form preferences keyed by form name.
+     *
+     * @generated from protobuf field: map<string, ttab.ntb.PreferenceValue> prefs = 11
+     */
+    prefs: {
+        [key: string]: PreferenceValue;
+    };
+}
+/**
+ * @generated from protobuf message ttab.ntb.TranslateResponse
+ */
+export interface TranslateResponse {
+    /**
+     * The translated document in the same format as the request.
+     *
+     * @generated from protobuf oneof: document
+     */
+    document: {
+        oneofKind: "text";
+        /**
+         * @generated from protobuf field: string text = 1
+         */
+        text: string;
+    } | {
+        oneofKind: "texts";
+        /**
+         * @generated from protobuf field: ttab.ntb.StringList texts = 2
+         */
+        texts: StringList;
+    } | {
+        oneofKind: "textMap";
+        /**
+         * @generated from protobuf field: ttab.ntb.StringMap text_map = 3
+         */
+        textMap: StringMap;
+    } | {
+        oneofKind: undefined;
+    };
+    /**
+     * The GUID associated with this translation.
+     *
+     * @generated from protobuf field: string guid = 4
+     */
+    guid: string;
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetLanguagePrefsRequest
+ */
+export interface GetLanguagePrefsRequest {
+}
+/**
+ * LanguagePreference describes a single optional language form.
+ *
+ * @generated from protobuf message ttab.ntb.LanguagePreference
+ */
+export interface LanguagePreference {
+    /**
+     * Category of the language form (e.g. "Konsonantar", "Synonym og stavemåtar").
+     *
+     * @generated from protobuf field: string category = 1
+     */
+    category: string;
+    /**
+     * Human-readable description of what this form changes.
+     *
+     * @generated from protobuf field: string description = 2
+     */
+    description: string;
+    /**
+     * Words that can be individually selected for this form. Empty if the form
+     * applies to all words in its category.
+     *
+     * @generated from protobuf field: repeated string modify_for = 3
+     */
+    modifyFor: string[];
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetLanguagePrefsResponse
+ */
+export interface GetLanguagePrefsResponse {
+    /**
+     * Map of form name to its details.
+     *
+     * @generated from protobuf field: map<string, ttab.ntb.LanguagePreference> language_prefs = 1
+     */
+    languagePrefs: {
+        [key: string]: LanguagePreference;
+    };
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetDocumentFormatsRequest
+ */
+export interface GetDocumentFormatsRequest {
+}
+/**
+ * DocumentFormatInfo describes a supported document format.
+ *
+ * @generated from protobuf message ttab.ntb.DocumentFormatInfo
+ */
+export interface DocumentFormatInfo {
+    /**
+     * The file type identifier used in translation requests (e.g. "html", "docx").
+     *
+     * @generated from protobuf field: string file_type = 1
+     */
+    fileType: string;
+    /**
+     * File suffixes associated with this format (e.g. [".html", ".htm"]).
+     *
+     * @generated from protobuf field: repeated string file_suffixes = 2
+     */
+    fileSuffixes: string[];
+    /**
+     * MIME types associated with this format (e.g. ["text/html"]).
+     *
+     * @generated from protobuf field: repeated string mime_types = 3
+     */
+    mimeTypes: string[];
+    /**
+     * Whether document content must be base64-encoded for this format.
+     *
+     * @generated from protobuf field: bool base64_encode = 4
+     */
+    base64Encode: boolean;
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetDocumentFormatsResponse
+ */
+export interface GetDocumentFormatsResponse {
+    /**
+     * @generated from protobuf field: repeated ttab.ntb.DocumentFormatInfo document_formats = 1
+     */
+    documentFormats: DocumentFormatInfo[];
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetPreferenceTemplatesRequest
+ */
+export interface GetPreferenceTemplatesRequest {
+}
+/**
+ * @generated from protobuf message ttab.ntb.GetPreferenceTemplatesResponse
+ */
+export interface GetPreferenceTemplatesResponse {
+    /**
+     * Map of template name to the list of language form names it enables.
+     *
+     * @generated from protobuf field: map<string, ttab.ntb.StringList> preference_templates = 1
+     */
+    preferenceTemplates: {
+        [key: string]: StringList;
+    };
+}
 // Enums
 
 /**
@@ -836,6 +1122,38 @@ export enum PreviewType {
      * @generated from protobuf enum value: PREVIEW_VIDEO = 2;
      */
     PREVIEW_VIDEO = 2
+}
+// Nynorsk Types
+
+/**
+ * LangParameterTranslate controls how text inside HTML lang-tagged elements
+ * is handled during translation.
+ *
+ * @generated from protobuf enum ttab.ntb.LangParameterTranslate
+ */
+export enum LangParameterTranslate {
+    /**
+     * @generated from protobuf enum value: LANG_PARAMETER_TRANSLATE_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * Translate only tags where the lang attribute matches the source language.
+     *
+     * @generated from protobuf enum value: LANG_PARAMETER_TRANSLATE_ORIGIN = 1;
+     */
+    ORIGIN = 1,
+    /**
+     * Ignore lang attributes and translate all text.
+     *
+     * @generated from protobuf enum value: LANG_PARAMETER_TRANSLATE_ALL = 2;
+     */
+    ALL = 2,
+    /**
+     * Do not translate any text inside lang-tagged elements.
+     *
+     * @generated from protobuf enum value: LANG_PARAMETER_TRANSLATE_NONE = 3;
+     */
+    NONE = 3
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class GetAssignmentRequest$Type extends MessageType<GetAssignmentRequest> {
@@ -2352,6 +2670,837 @@ class SortField$Type extends MessageType<SortField> {
  * @generated MessageType for protobuf message ttab.ntb.SortField
  */
 export const SortField = new SortField$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StringList$Type extends MessageType<StringList> {
+    constructor() {
+        super("ttab.ntb.StringList", [
+            { no: 1, name: "values", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StringList>): StringList {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.values = [];
+        if (value !== undefined)
+            reflectionMergePartial<StringList>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StringList): StringList {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated string values */ 1:
+                    message.values.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StringList, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated string values = 1; */
+        for (let i = 0; i < message.values.length; i++)
+            writer.tag(1, WireType.LengthDelimited).string(message.values[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.StringList
+ */
+export const StringList = new StringList$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StringMap$Type extends MessageType<StringMap> {
+    constructor() {
+        super("ttab.ntb.StringMap", [
+            { no: 1, name: "entries", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "scalar", T: 9 /*ScalarType.STRING*/ } }
+        ]);
+    }
+    create(value?: PartialMessage<StringMap>): StringMap {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.entries = {};
+        if (value !== undefined)
+            reflectionMergePartial<StringMap>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StringMap): StringMap {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, string> entries */ 1:
+                    this.binaryReadMap1(message.entries, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: StringMap["entries"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof StringMap["entries"] | undefined, val: StringMap["entries"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = reader.string();
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for ttab.ntb.StringMap.entries");
+            }
+        }
+        map[key ?? ""] = val ?? "";
+    }
+    internalBinaryWrite(message: StringMap, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, string> entries = 1; */
+        for (let k of globalThis.Object.keys(message.entries))
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k).tag(2, WireType.LengthDelimited).string(message.entries[k]).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.StringMap
+ */
+export const StringMap = new StringMap$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PreferenceValue$Type extends MessageType<PreferenceValue> {
+    constructor() {
+        super("ttab.ntb.PreferenceValue", [
+            { no: 1, name: "enabled", kind: "scalar", oneof: "value", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "words", kind: "message", oneof: "value", T: () => StringList }
+        ]);
+    }
+    create(value?: PartialMessage<PreferenceValue>): PreferenceValue {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.value = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<PreferenceValue>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PreferenceValue): PreferenceValue {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool enabled */ 1:
+                    message.value = {
+                        oneofKind: "enabled",
+                        enabled: reader.bool()
+                    };
+                    break;
+                case /* ttab.ntb.StringList words */ 2:
+                    message.value = {
+                        oneofKind: "words",
+                        words: StringList.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).words)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PreferenceValue, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool enabled = 1; */
+        if (message.value.oneofKind === "enabled")
+            writer.tag(1, WireType.Varint).bool(message.value.enabled);
+        /* ttab.ntb.StringList words = 2; */
+        if (message.value.oneofKind === "words")
+            StringList.internalBinaryWrite(message.value.words, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.PreferenceValue
+ */
+export const PreferenceValue = new PreferenceValue$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TranslateRequest$Type extends MessageType<TranslateRequest> {
+    constructor() {
+        super("ttab.ntb.TranslateRequest", [
+            { no: 1, name: "text", kind: "scalar", oneof: "document", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "texts", kind: "message", oneof: "document", T: () => StringList },
+            { no: 3, name: "text_map", kind: "message", oneof: "document", T: () => StringMap },
+            { no: 4, name: "file_type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "lang_parameter_translate", kind: "enum", T: () => ["ttab.ntb.LangParameterTranslate", LangParameterTranslate, "LANG_PARAMETER_TRANSLATE_"] },
+            { no: 6, name: "prefs_template", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "source_language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "target_language", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "post_edit", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 11, name: "prefs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => PreferenceValue } }
+        ]);
+    }
+    create(value?: PartialMessage<TranslateRequest>): TranslateRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.document = { oneofKind: undefined };
+        message.fileType = "";
+        message.langParameterTranslate = 0;
+        message.prefsTemplate = "";
+        message.guid = "";
+        message.sourceLanguage = "";
+        message.targetLanguage = "";
+        message.postEdit = false;
+        message.prefs = {};
+        if (value !== undefined)
+            reflectionMergePartial<TranslateRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TranslateRequest): TranslateRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string text */ 1:
+                    message.document = {
+                        oneofKind: "text",
+                        text: reader.string()
+                    };
+                    break;
+                case /* ttab.ntb.StringList texts */ 2:
+                    message.document = {
+                        oneofKind: "texts",
+                        texts: StringList.internalBinaryRead(reader, reader.uint32(), options, (message.document as any).texts)
+                    };
+                    break;
+                case /* ttab.ntb.StringMap text_map */ 3:
+                    message.document = {
+                        oneofKind: "textMap",
+                        textMap: StringMap.internalBinaryRead(reader, reader.uint32(), options, (message.document as any).textMap)
+                    };
+                    break;
+                case /* string file_type */ 4:
+                    message.fileType = reader.string();
+                    break;
+                case /* ttab.ntb.LangParameterTranslate lang_parameter_translate */ 5:
+                    message.langParameterTranslate = reader.int32();
+                    break;
+                case /* string prefs_template */ 6:
+                    message.prefsTemplate = reader.string();
+                    break;
+                case /* string guid */ 7:
+                    message.guid = reader.string();
+                    break;
+                case /* string source_language */ 8:
+                    message.sourceLanguage = reader.string();
+                    break;
+                case /* string target_language */ 9:
+                    message.targetLanguage = reader.string();
+                    break;
+                case /* bool post_edit */ 10:
+                    message.postEdit = reader.bool();
+                    break;
+                case /* map<string, ttab.ntb.PreferenceValue> prefs */ 11:
+                    this.binaryReadMap11(message.prefs, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap11(map: TranslateRequest["prefs"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof TranslateRequest["prefs"] | undefined, val: TranslateRequest["prefs"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = PreferenceValue.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for ttab.ntb.TranslateRequest.prefs");
+            }
+        }
+        map[key ?? ""] = val ?? PreferenceValue.create();
+    }
+    internalBinaryWrite(message: TranslateRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string text = 1; */
+        if (message.document.oneofKind === "text")
+            writer.tag(1, WireType.LengthDelimited).string(message.document.text);
+        /* ttab.ntb.StringList texts = 2; */
+        if (message.document.oneofKind === "texts")
+            StringList.internalBinaryWrite(message.document.texts, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* ttab.ntb.StringMap text_map = 3; */
+        if (message.document.oneofKind === "textMap")
+            StringMap.internalBinaryWrite(message.document.textMap, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* string file_type = 4; */
+        if (message.fileType !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.fileType);
+        /* ttab.ntb.LangParameterTranslate lang_parameter_translate = 5; */
+        if (message.langParameterTranslate !== 0)
+            writer.tag(5, WireType.Varint).int32(message.langParameterTranslate);
+        /* string prefs_template = 6; */
+        if (message.prefsTemplate !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.prefsTemplate);
+        /* string guid = 7; */
+        if (message.guid !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.guid);
+        /* string source_language = 8; */
+        if (message.sourceLanguage !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.sourceLanguage);
+        /* string target_language = 9; */
+        if (message.targetLanguage !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.targetLanguage);
+        /* bool post_edit = 10; */
+        if (message.postEdit !== false)
+            writer.tag(10, WireType.Varint).bool(message.postEdit);
+        /* map<string, ttab.ntb.PreferenceValue> prefs = 11; */
+        for (let k of globalThis.Object.keys(message.prefs)) {
+            writer.tag(11, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            PreferenceValue.internalBinaryWrite(message.prefs[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.TranslateRequest
+ */
+export const TranslateRequest = new TranslateRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TranslateResponse$Type extends MessageType<TranslateResponse> {
+    constructor() {
+        super("ttab.ntb.TranslateResponse", [
+            { no: 1, name: "text", kind: "scalar", oneof: "document", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "texts", kind: "message", oneof: "document", T: () => StringList },
+            { no: 3, name: "text_map", kind: "message", oneof: "document", T: () => StringMap },
+            { no: 4, name: "guid", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<TranslateResponse>): TranslateResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.document = { oneofKind: undefined };
+        message.guid = "";
+        if (value !== undefined)
+            reflectionMergePartial<TranslateResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TranslateResponse): TranslateResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string text */ 1:
+                    message.document = {
+                        oneofKind: "text",
+                        text: reader.string()
+                    };
+                    break;
+                case /* ttab.ntb.StringList texts */ 2:
+                    message.document = {
+                        oneofKind: "texts",
+                        texts: StringList.internalBinaryRead(reader, reader.uint32(), options, (message.document as any).texts)
+                    };
+                    break;
+                case /* ttab.ntb.StringMap text_map */ 3:
+                    message.document = {
+                        oneofKind: "textMap",
+                        textMap: StringMap.internalBinaryRead(reader, reader.uint32(), options, (message.document as any).textMap)
+                    };
+                    break;
+                case /* string guid */ 4:
+                    message.guid = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: TranslateResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string text = 1; */
+        if (message.document.oneofKind === "text")
+            writer.tag(1, WireType.LengthDelimited).string(message.document.text);
+        /* ttab.ntb.StringList texts = 2; */
+        if (message.document.oneofKind === "texts")
+            StringList.internalBinaryWrite(message.document.texts, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* ttab.ntb.StringMap text_map = 3; */
+        if (message.document.oneofKind === "textMap")
+            StringMap.internalBinaryWrite(message.document.textMap, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* string guid = 4; */
+        if (message.guid !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.guid);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.TranslateResponse
+ */
+export const TranslateResponse = new TranslateResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetLanguagePrefsRequest$Type extends MessageType<GetLanguagePrefsRequest> {
+    constructor() {
+        super("ttab.ntb.GetLanguagePrefsRequest", []);
+    }
+    create(value?: PartialMessage<GetLanguagePrefsRequest>): GetLanguagePrefsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetLanguagePrefsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetLanguagePrefsRequest): GetLanguagePrefsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetLanguagePrefsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetLanguagePrefsRequest
+ */
+export const GetLanguagePrefsRequest = new GetLanguagePrefsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class LanguagePreference$Type extends MessageType<LanguagePreference> {
+    constructor() {
+        super("ttab.ntb.LanguagePreference", [
+            { no: 1, name: "category", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "modify_for", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<LanguagePreference>): LanguagePreference {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.category = "";
+        message.description = "";
+        message.modifyFor = [];
+        if (value !== undefined)
+            reflectionMergePartial<LanguagePreference>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: LanguagePreference): LanguagePreference {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string category */ 1:
+                    message.category = reader.string();
+                    break;
+                case /* string description */ 2:
+                    message.description = reader.string();
+                    break;
+                case /* repeated string modify_for */ 3:
+                    message.modifyFor.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: LanguagePreference, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string category = 1; */
+        if (message.category !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.category);
+        /* string description = 2; */
+        if (message.description !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.description);
+        /* repeated string modify_for = 3; */
+        for (let i = 0; i < message.modifyFor.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.modifyFor[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.LanguagePreference
+ */
+export const LanguagePreference = new LanguagePreference$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetLanguagePrefsResponse$Type extends MessageType<GetLanguagePrefsResponse> {
+    constructor() {
+        super("ttab.ntb.GetLanguagePrefsResponse", [
+            { no: 1, name: "language_prefs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => LanguagePreference } }
+        ]);
+    }
+    create(value?: PartialMessage<GetLanguagePrefsResponse>): GetLanguagePrefsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.languagePrefs = {};
+        if (value !== undefined)
+            reflectionMergePartial<GetLanguagePrefsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetLanguagePrefsResponse): GetLanguagePrefsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, ttab.ntb.LanguagePreference> language_prefs */ 1:
+                    this.binaryReadMap1(message.languagePrefs, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: GetLanguagePrefsResponse["languagePrefs"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof GetLanguagePrefsResponse["languagePrefs"] | undefined, val: GetLanguagePrefsResponse["languagePrefs"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = LanguagePreference.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for ttab.ntb.GetLanguagePrefsResponse.language_prefs");
+            }
+        }
+        map[key ?? ""] = val ?? LanguagePreference.create();
+    }
+    internalBinaryWrite(message: GetLanguagePrefsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, ttab.ntb.LanguagePreference> language_prefs = 1; */
+        for (let k of globalThis.Object.keys(message.languagePrefs)) {
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            LanguagePreference.internalBinaryWrite(message.languagePrefs[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetLanguagePrefsResponse
+ */
+export const GetLanguagePrefsResponse = new GetLanguagePrefsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetDocumentFormatsRequest$Type extends MessageType<GetDocumentFormatsRequest> {
+    constructor() {
+        super("ttab.ntb.GetDocumentFormatsRequest", []);
+    }
+    create(value?: PartialMessage<GetDocumentFormatsRequest>): GetDocumentFormatsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetDocumentFormatsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetDocumentFormatsRequest): GetDocumentFormatsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetDocumentFormatsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetDocumentFormatsRequest
+ */
+export const GetDocumentFormatsRequest = new GetDocumentFormatsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DocumentFormatInfo$Type extends MessageType<DocumentFormatInfo> {
+    constructor() {
+        super("ttab.ntb.DocumentFormatInfo", [
+            { no: 1, name: "file_type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "file_suffixes", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "mime_types", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "base64_encode", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<DocumentFormatInfo>): DocumentFormatInfo {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.fileType = "";
+        message.fileSuffixes = [];
+        message.mimeTypes = [];
+        message.base64Encode = false;
+        if (value !== undefined)
+            reflectionMergePartial<DocumentFormatInfo>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DocumentFormatInfo): DocumentFormatInfo {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string file_type */ 1:
+                    message.fileType = reader.string();
+                    break;
+                case /* repeated string file_suffixes */ 2:
+                    message.fileSuffixes.push(reader.string());
+                    break;
+                case /* repeated string mime_types */ 3:
+                    message.mimeTypes.push(reader.string());
+                    break;
+                case /* bool base64_encode */ 4:
+                    message.base64Encode = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DocumentFormatInfo, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string file_type = 1; */
+        if (message.fileType !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.fileType);
+        /* repeated string file_suffixes = 2; */
+        for (let i = 0; i < message.fileSuffixes.length; i++)
+            writer.tag(2, WireType.LengthDelimited).string(message.fileSuffixes[i]);
+        /* repeated string mime_types = 3; */
+        for (let i = 0; i < message.mimeTypes.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.mimeTypes[i]);
+        /* bool base64_encode = 4; */
+        if (message.base64Encode !== false)
+            writer.tag(4, WireType.Varint).bool(message.base64Encode);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.DocumentFormatInfo
+ */
+export const DocumentFormatInfo = new DocumentFormatInfo$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetDocumentFormatsResponse$Type extends MessageType<GetDocumentFormatsResponse> {
+    constructor() {
+        super("ttab.ntb.GetDocumentFormatsResponse", [
+            { no: 1, name: "document_formats", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => DocumentFormatInfo }
+        ]);
+    }
+    create(value?: PartialMessage<GetDocumentFormatsResponse>): GetDocumentFormatsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.documentFormats = [];
+        if (value !== undefined)
+            reflectionMergePartial<GetDocumentFormatsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetDocumentFormatsResponse): GetDocumentFormatsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.ntb.DocumentFormatInfo document_formats */ 1:
+                    message.documentFormats.push(DocumentFormatInfo.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetDocumentFormatsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.ntb.DocumentFormatInfo document_formats = 1; */
+        for (let i = 0; i < message.documentFormats.length; i++)
+            DocumentFormatInfo.internalBinaryWrite(message.documentFormats[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetDocumentFormatsResponse
+ */
+export const GetDocumentFormatsResponse = new GetDocumentFormatsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetPreferenceTemplatesRequest$Type extends MessageType<GetPreferenceTemplatesRequest> {
+    constructor() {
+        super("ttab.ntb.GetPreferenceTemplatesRequest", []);
+    }
+    create(value?: PartialMessage<GetPreferenceTemplatesRequest>): GetPreferenceTemplatesRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetPreferenceTemplatesRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetPreferenceTemplatesRequest): GetPreferenceTemplatesRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetPreferenceTemplatesRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetPreferenceTemplatesRequest
+ */
+export const GetPreferenceTemplatesRequest = new GetPreferenceTemplatesRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetPreferenceTemplatesResponse$Type extends MessageType<GetPreferenceTemplatesResponse> {
+    constructor() {
+        super("ttab.ntb.GetPreferenceTemplatesResponse", [
+            { no: 1, name: "preference_templates", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => StringList } }
+        ]);
+    }
+    create(value?: PartialMessage<GetPreferenceTemplatesResponse>): GetPreferenceTemplatesResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.preferenceTemplates = {};
+        if (value !== undefined)
+            reflectionMergePartial<GetPreferenceTemplatesResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetPreferenceTemplatesResponse): GetPreferenceTemplatesResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, ttab.ntb.StringList> preference_templates */ 1:
+                    this.binaryReadMap1(message.preferenceTemplates, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: GetPreferenceTemplatesResponse["preferenceTemplates"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof GetPreferenceTemplatesResponse["preferenceTemplates"] | undefined, val: GetPreferenceTemplatesResponse["preferenceTemplates"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = StringList.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for ttab.ntb.GetPreferenceTemplatesResponse.preference_templates");
+            }
+        }
+        map[key ?? ""] = val ?? StringList.create();
+    }
+    internalBinaryWrite(message: GetPreferenceTemplatesResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, ttab.ntb.StringList> preference_templates = 1; */
+        for (let k of globalThis.Object.keys(message.preferenceTemplates)) {
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            StringList.internalBinaryWrite(message.preferenceTemplates[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.GetPreferenceTemplatesResponse
+ */
+export const GetPreferenceTemplatesResponse = new GetPreferenceTemplatesResponse$Type();
 /**
  * @generated ServiceType for protobuf service ttab.ntb.Metadata
  */
@@ -2365,4 +3514,13 @@ export const Media = new ServiceType("ttab.ntb.Media", [
     { name: "Search", options: {}, I: SearchRequest, O: SearchResponse },
     { name: "GetItem", options: {}, I: GetItemRequest, O: GetItemResponse },
     { name: "GetSortFields", options: {}, I: GetSortFieldsRequest, O: GetSortFieldsResponse }
+]);
+/**
+ * @generated ServiceType for protobuf service ttab.ntb.Nynorsk
+ */
+export const Nynorsk = new ServiceType("ttab.ntb.Nynorsk", [
+    { name: "Translate", options: {}, I: TranslateRequest, O: TranslateResponse },
+    { name: "GetLanguagePrefs", options: {}, I: GetLanguagePrefsRequest, O: GetLanguagePrefsResponse },
+    { name: "GetDocumentFormats", options: {}, I: GetDocumentFormatsRequest, O: GetDocumentFormatsResponse },
+    { name: "GetPreferenceTemplates", options: {}, I: GetPreferenceTemplatesRequest, O: GetPreferenceTemplatesResponse }
 ]);
