@@ -49,6 +49,34 @@ export interface AnalyseDocumentResponse {
      */
     text: string;
 }
+/**
+ * @generated from protobuf message ttab.eidos.RegisterUsageRequest
+ */
+export interface RegisterUsageRequest {
+    /**
+     * ContentType of the media that was tagged.
+     *
+     * @generated from protobuf field: string content_type = 1
+     */
+    contentType: string;
+    /**
+     * ContentURI is an URI that identified the tagged media.
+     *
+     * @generated from protobuf field: string context_uri = 2
+     */
+    contextUri: string;
+    /**
+     * The UUIDs of the entities that were used.
+     *
+     * @generated from protobuf field: repeated string entity_uuids = 3
+     */
+    entityUuids: string[];
+}
+/**
+ * @generated from protobuf message ttab.eidos.RegisterUsageResponse
+ */
+export interface RegisterUsageResponse {
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class AnalyseDocumentRequest$Type extends MessageType<AnalyseDocumentRequest> {
     constructor() {
@@ -157,9 +185,111 @@ class AnalyseDocumentResponse$Type extends MessageType<AnalyseDocumentResponse> 
  * @generated MessageType for protobuf message ttab.eidos.AnalyseDocumentResponse
  */
 export const AnalyseDocumentResponse = new AnalyseDocumentResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RegisterUsageRequest$Type extends MessageType<RegisterUsageRequest> {
+    constructor() {
+        super("ttab.eidos.RegisterUsageRequest", [
+            { no: 1, name: "content_type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "context_uri", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "entity_uuids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<RegisterUsageRequest>): RegisterUsageRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.contentType = "";
+        message.contextUri = "";
+        message.entityUuids = [];
+        if (value !== undefined)
+            reflectionMergePartial<RegisterUsageRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RegisterUsageRequest): RegisterUsageRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string content_type */ 1:
+                    message.contentType = reader.string();
+                    break;
+                case /* string context_uri */ 2:
+                    message.contextUri = reader.string();
+                    break;
+                case /* repeated string entity_uuids */ 3:
+                    message.entityUuids.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RegisterUsageRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string content_type = 1; */
+        if (message.contentType !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.contentType);
+        /* string context_uri = 2; */
+        if (message.contextUri !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.contextUri);
+        /* repeated string entity_uuids = 3; */
+        for (let i = 0; i < message.entityUuids.length; i++)
+            writer.tag(3, WireType.LengthDelimited).string(message.entityUuids[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.eidos.RegisterUsageRequest
+ */
+export const RegisterUsageRequest = new RegisterUsageRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RegisterUsageResponse$Type extends MessageType<RegisterUsageResponse> {
+    constructor() {
+        super("ttab.eidos.RegisterUsageResponse", []);
+    }
+    create(value?: PartialMessage<RegisterUsageResponse>): RegisterUsageResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<RegisterUsageResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RegisterUsageResponse): RegisterUsageResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RegisterUsageResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.eidos.RegisterUsageResponse
+ */
+export const RegisterUsageResponse = new RegisterUsageResponse$Type();
 /**
  * @generated ServiceType for protobuf service ttab.eidos.Tagger
  */
 export const Tagger = new ServiceType("ttab.eidos.Tagger", [
-    { name: "AnalyseDocument", options: {}, I: AnalyseDocumentRequest, O: AnalyseDocumentResponse }
+    { name: "AnalyseDocument", options: {}, I: AnalyseDocumentRequest, O: AnalyseDocumentResponse },
+    { name: "RegisterUsage", options: {}, I: RegisterUsageRequest, O: RegisterUsageResponse }
 ]);

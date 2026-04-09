@@ -6,6 +6,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Tagger } from "./service";
+import type { RegisterUsageResponse } from "./service";
+import type { RegisterUsageRequest } from "./service";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { AnalyseDocumentResponse } from "./service";
 import type { AnalyseDocumentRequest } from "./service";
@@ -22,6 +24,13 @@ export interface ITaggerClient {
      * @generated from protobuf rpc: AnalyseDocument
      */
     analyseDocument(input: AnalyseDocumentRequest, options?: RpcOptions): UnaryCall<AnalyseDocumentRequest, AnalyseDocumentResponse>;
+    /**
+     * RegisterUsage is used to inform eidos when an external system has tagged a
+     * piece of media with entities managed by eidos.
+     *
+     * @generated from protobuf rpc: RegisterUsage
+     */
+    registerUsage(input: RegisterUsageRequest, options?: RpcOptions): UnaryCall<RegisterUsageRequest, RegisterUsageResponse>;
 }
 /**
  * @generated from protobuf service ttab.eidos.Tagger
@@ -41,5 +50,15 @@ export class TaggerClient implements ITaggerClient, ServiceInfo {
     analyseDocument(input: AnalyseDocumentRequest, options?: RpcOptions): UnaryCall<AnalyseDocumentRequest, AnalyseDocumentResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<AnalyseDocumentRequest, AnalyseDocumentResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * RegisterUsage is used to inform eidos when an external system has tagged a
+     * piece of media with entities managed by eidos.
+     *
+     * @generated from protobuf rpc: RegisterUsage
+     */
+    registerUsage(input: RegisterUsageRequest, options?: RpcOptions): UnaryCall<RegisterUsageRequest, RegisterUsageResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<RegisterUsageRequest, RegisterUsageResponse>("unary", this._transport, method, opt, input);
     }
 }

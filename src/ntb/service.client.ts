@@ -3,6 +3,15 @@
 // @generated from protobuf file "ntb/service.proto" (package "ttab.ntb", syntax proto3)
 // tslint:disable
 // @ts-nocheck
+import { Nynorsk } from "./service";
+import type { GetPreferenceTemplatesResponse } from "./service";
+import type { GetPreferenceTemplatesRequest } from "./service";
+import type { GetDocumentFormatsResponse } from "./service";
+import type { GetDocumentFormatsRequest } from "./service";
+import type { GetLanguagePrefsResponse } from "./service";
+import type { GetLanguagePrefsRequest } from "./service";
+import type { TranslateResponse } from "./service";
+import type { TranslateRequest } from "./service";
 import { Media } from "./service";
 import type { GetSortFieldsResponse } from "./service";
 import type { GetSortFieldsRequest } from "./service";
@@ -114,5 +123,86 @@ export class MediaClient implements IMediaClient, ServiceInfo {
     getSortFields(input: GetSortFieldsRequest, options?: RpcOptions): UnaryCall<GetSortFieldsRequest, GetSortFieldsResponse> {
         const method = this.methods[2], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetSortFieldsRequest, GetSortFieldsResponse>("unary", this._transport, method, opt, input);
+    }
+}
+/**
+ * Nynorsk service for translating documents using Nynorskroboten.
+ *
+ * @generated from protobuf service ttab.ntb.Nynorsk
+ */
+export interface INynorskClient {
+    /**
+     * Translate translates a document between Scandinavian languages.
+     *
+     * @generated from protobuf rpc: Translate
+     */
+    translate(input: TranslateRequest, options?: RpcOptions): UnaryCall<TranslateRequest, TranslateResponse>;
+    /**
+     * GetLanguagePrefs returns the available optional language forms.
+     *
+     * @generated from protobuf rpc: GetLanguagePrefs
+     */
+    getLanguagePrefs(input: GetLanguagePrefsRequest, options?: RpcOptions): UnaryCall<GetLanguagePrefsRequest, GetLanguagePrefsResponse>;
+    /**
+     * GetDocumentFormats returns the supported document formats.
+     *
+     * @generated from protobuf rpc: GetDocumentFormats
+     */
+    getDocumentFormats(input: GetDocumentFormatsRequest, options?: RpcOptions): UnaryCall<GetDocumentFormatsRequest, GetDocumentFormatsResponse>;
+    /**
+     * GetPreferenceTemplates returns the available preference templates and the
+     * language forms they enable.
+     *
+     * @generated from protobuf rpc: GetPreferenceTemplates
+     */
+    getPreferenceTemplates(input: GetPreferenceTemplatesRequest, options?: RpcOptions): UnaryCall<GetPreferenceTemplatesRequest, GetPreferenceTemplatesResponse>;
+}
+/**
+ * Nynorsk service for translating documents using Nynorskroboten.
+ *
+ * @generated from protobuf service ttab.ntb.Nynorsk
+ */
+export class NynorskClient implements INynorskClient, ServiceInfo {
+    typeName = Nynorsk.typeName;
+    methods = Nynorsk.methods;
+    options = Nynorsk.options;
+    constructor(private readonly _transport: RpcTransport) {
+    }
+    /**
+     * Translate translates a document between Scandinavian languages.
+     *
+     * @generated from protobuf rpc: Translate
+     */
+    translate(input: TranslateRequest, options?: RpcOptions): UnaryCall<TranslateRequest, TranslateResponse> {
+        const method = this.methods[0], opt = this._transport.mergeOptions(options);
+        return stackIntercept<TranslateRequest, TranslateResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GetLanguagePrefs returns the available optional language forms.
+     *
+     * @generated from protobuf rpc: GetLanguagePrefs
+     */
+    getLanguagePrefs(input: GetLanguagePrefsRequest, options?: RpcOptions): UnaryCall<GetLanguagePrefsRequest, GetLanguagePrefsResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetLanguagePrefsRequest, GetLanguagePrefsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GetDocumentFormats returns the supported document formats.
+     *
+     * @generated from protobuf rpc: GetDocumentFormats
+     */
+    getDocumentFormats(input: GetDocumentFormatsRequest, options?: RpcOptions): UnaryCall<GetDocumentFormatsRequest, GetDocumentFormatsResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetDocumentFormatsRequest, GetDocumentFormatsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GetPreferenceTemplates returns the available preference templates and the
+     * language forms they enable.
+     *
+     * @generated from protobuf rpc: GetPreferenceTemplates
+     */
+    getPreferenceTemplates(input: GetPreferenceTemplatesRequest, options?: RpcOptions): UnaryCall<GetPreferenceTemplatesRequest, GetPreferenceTemplatesResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetPreferenceTemplatesRequest, GetPreferenceTemplatesResponse>("unary", this._transport, method, opt, input);
     }
 }
