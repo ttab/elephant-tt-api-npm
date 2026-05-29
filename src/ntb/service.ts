@@ -13,6 +13,8 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+// Metadata Request/Response Messages
+
 /**
  * @generated from protobuf message ttab.ntb.GetAssignmentRequest
  */
@@ -37,7 +39,46 @@ export interface GetAssignmentResponse {
      */
     assignmentUuid: string;
 }
-// Request/Response Messages
+/**
+ * @generated from protobuf message ttab.ntb.ListAssignmentsRequest
+ */
+export interface ListAssignmentsRequest {
+}
+/**
+ * @generated from protobuf message ttab.ntb.Assignment
+ */
+export interface Assignment {
+    /**
+     * @generated from protobuf field: string planning_uuid = 1
+     */
+    planningUuid: string;
+    /**
+     * @generated from protobuf field: string assignment_uuid = 2
+     */
+    assignmentUuid: string;
+    /**
+     * @generated from protobuf field: string assignee_uuid = 3
+     */
+    assigneeUuid: string;
+    /**
+     * @generated from protobuf field: string assignee_name = 4
+     */
+    assigneeName: string;
+    /**
+     * @generated from protobuf field: string commission_code = 5
+     */
+    commissionCode: string;
+}
+/**
+ * @generated from protobuf message ttab.ntb.ListAssignmentsResponse
+ */
+export interface ListAssignmentsResponse {
+    /**
+     * @generated from protobuf field: repeated ttab.ntb.Assignment assignments = 1
+     */
+    assignments: Assignment[];
+}
+// Media Request/Response Messages
 
 /**
  * @generated from protobuf message ttab.ntb.GetItemRequest
@@ -207,6 +248,36 @@ export interface SearchRequest {
      * @generated from protobuf field: bool outside_subscription = 23
      */
     outsideSubscription: boolean;
+    /**
+     * Filter by editorial topics.
+     *
+     * @generated from protobuf field: repeated string editorial_topics = 24
+     */
+    editorialTopics: string[];
+    /**
+     * Filter by distributor names.
+     *
+     * @generated from protobuf field: repeated string distributor_names = 25
+     */
+    distributorNames: string[];
+    /**
+     * Filter by events.
+     *
+     * @generated from protobuf field: repeated string events = 26
+     */
+    events: string[];
+    /**
+     * Filter by subject terms.
+     *
+     * @generated from protobuf field: repeated string subject_terms = 27
+     */
+    subjectTerms: string[];
+    /**
+     * Filter by persons.
+     *
+     * @generated from protobuf field: repeated string persons = 28
+     */
+    persons: string[];
 }
 /**
  * @generated from protobuf message ttab.ntb.Sort
@@ -939,7 +1010,7 @@ export interface GetPreferenceTemplatesResponse {
         [key: string]: StringList;
     };
 }
-// Enums
+// Media Enums
 
 /**
  * @generated from protobuf enum ttab.ntb.Orientation
@@ -1258,6 +1329,170 @@ class GetAssignmentResponse$Type extends MessageType<GetAssignmentResponse> {
  */
 export const GetAssignmentResponse = new GetAssignmentResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class ListAssignmentsRequest$Type extends MessageType<ListAssignmentsRequest> {
+    constructor() {
+        super("ttab.ntb.ListAssignmentsRequest", []);
+    }
+    create(value?: PartialMessage<ListAssignmentsRequest>): ListAssignmentsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<ListAssignmentsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListAssignmentsRequest): ListAssignmentsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListAssignmentsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.ListAssignmentsRequest
+ */
+export const ListAssignmentsRequest = new ListAssignmentsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Assignment$Type extends MessageType<Assignment> {
+    constructor() {
+        super("ttab.ntb.Assignment", [
+            { no: 1, name: "planning_uuid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "assignment_uuid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "assignee_uuid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "assignee_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "commission_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Assignment>): Assignment {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.planningUuid = "";
+        message.assignmentUuid = "";
+        message.assigneeUuid = "";
+        message.assigneeName = "";
+        message.commissionCode = "";
+        if (value !== undefined)
+            reflectionMergePartial<Assignment>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Assignment): Assignment {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string planning_uuid */ 1:
+                    message.planningUuid = reader.string();
+                    break;
+                case /* string assignment_uuid */ 2:
+                    message.assignmentUuid = reader.string();
+                    break;
+                case /* string assignee_uuid */ 3:
+                    message.assigneeUuid = reader.string();
+                    break;
+                case /* string assignee_name */ 4:
+                    message.assigneeName = reader.string();
+                    break;
+                case /* string commission_code */ 5:
+                    message.commissionCode = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Assignment, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string planning_uuid = 1; */
+        if (message.planningUuid !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.planningUuid);
+        /* string assignment_uuid = 2; */
+        if (message.assignmentUuid !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.assignmentUuid);
+        /* string assignee_uuid = 3; */
+        if (message.assigneeUuid !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.assigneeUuid);
+        /* string assignee_name = 4; */
+        if (message.assigneeName !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.assigneeName);
+        /* string commission_code = 5; */
+        if (message.commissionCode !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.commissionCode);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.Assignment
+ */
+export const Assignment = new Assignment$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListAssignmentsResponse$Type extends MessageType<ListAssignmentsResponse> {
+    constructor() {
+        super("ttab.ntb.ListAssignmentsResponse", [
+            { no: 1, name: "assignments", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Assignment }
+        ]);
+    }
+    create(value?: PartialMessage<ListAssignmentsResponse>): ListAssignmentsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.assignments = [];
+        if (value !== undefined)
+            reflectionMergePartial<ListAssignmentsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListAssignmentsResponse): ListAssignmentsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.ntb.Assignment assignments */ 1:
+                    message.assignments.push(Assignment.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListAssignmentsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.ntb.Assignment assignments = 1; */
+        for (let i = 0; i < message.assignments.length; i++)
+            Assignment.internalBinaryWrite(message.assignments[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.ntb.ListAssignmentsResponse
+ */
+export const ListAssignmentsResponse = new ListAssignmentsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class GetItemRequest$Type extends MessageType<GetItemRequest> {
     constructor() {
         super("ttab.ntb.GetItemRequest", [
@@ -1384,7 +1619,12 @@ class SearchRequest$Type extends MessageType<SearchRequest> {
             { no: 20, name: "file_type", kind: "enum", T: () => ["ttab.ntb.FileType", FileType, "FILE_TYPE_"] },
             { no: 21, name: "created_min", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 22, name: "created_max", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 23, name: "outside_subscription", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 23, name: "outside_subscription", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 24, name: "editorial_topics", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 25, name: "distributor_names", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 26, name: "events", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 27, name: "subject_terms", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 28, name: "persons", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<SearchRequest>): SearchRequest {
@@ -1411,6 +1651,11 @@ class SearchRequest$Type extends MessageType<SearchRequest> {
         message.createdMin = "";
         message.createdMax = "";
         message.outsideSubscription = false;
+        message.editorialTopics = [];
+        message.distributorNames = [];
+        message.events = [];
+        message.subjectTerms = [];
+        message.persons = [];
         if (value !== undefined)
             reflectionMergePartial<SearchRequest>(this, message, value);
         return message;
@@ -1500,6 +1745,21 @@ class SearchRequest$Type extends MessageType<SearchRequest> {
                     break;
                 case /* bool outside_subscription */ 23:
                     message.outsideSubscription = reader.bool();
+                    break;
+                case /* repeated string editorial_topics */ 24:
+                    message.editorialTopics.push(reader.string());
+                    break;
+                case /* repeated string distributor_names */ 25:
+                    message.distributorNames.push(reader.string());
+                    break;
+                case /* repeated string events */ 26:
+                    message.events.push(reader.string());
+                    break;
+                case /* repeated string subject_terms */ 27:
+                    message.subjectTerms.push(reader.string());
+                    break;
+                case /* repeated string persons */ 28:
+                    message.persons.push(reader.string());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1594,6 +1854,21 @@ class SearchRequest$Type extends MessageType<SearchRequest> {
         /* bool outside_subscription = 23; */
         if (message.outsideSubscription !== false)
             writer.tag(23, WireType.Varint).bool(message.outsideSubscription);
+        /* repeated string editorial_topics = 24; */
+        for (let i = 0; i < message.editorialTopics.length; i++)
+            writer.tag(24, WireType.LengthDelimited).string(message.editorialTopics[i]);
+        /* repeated string distributor_names = 25; */
+        for (let i = 0; i < message.distributorNames.length; i++)
+            writer.tag(25, WireType.LengthDelimited).string(message.distributorNames[i]);
+        /* repeated string events = 26; */
+        for (let i = 0; i < message.events.length; i++)
+            writer.tag(26, WireType.LengthDelimited).string(message.events[i]);
+        /* repeated string subject_terms = 27; */
+        for (let i = 0; i < message.subjectTerms.length; i++)
+            writer.tag(27, WireType.LengthDelimited).string(message.subjectTerms[i]);
+        /* repeated string persons = 28; */
+        for (let i = 0; i < message.persons.length; i++)
+            writer.tag(28, WireType.LengthDelimited).string(message.persons[i]);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3505,7 +3780,8 @@ export const GetPreferenceTemplatesResponse = new GetPreferenceTemplatesResponse
  * @generated ServiceType for protobuf service ttab.ntb.Metadata
  */
 export const Metadata = new ServiceType("ttab.ntb.Metadata", [
-    { name: "GetAssignment", options: {}, I: GetAssignmentRequest, O: GetAssignmentResponse }
+    { name: "GetAssignment", options: {}, I: GetAssignmentRequest, O: GetAssignmentResponse },
+    { name: "ListAssignments", options: {}, I: ListAssignmentsRequest, O: ListAssignmentsResponse }
 ]);
 /**
  * @generated ServiceType for protobuf service ttab.ntb.Media

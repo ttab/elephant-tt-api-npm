@@ -22,6 +22,8 @@ import type { SearchRequest } from "./service";
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Metadata } from "./service";
+import type { ListAssignmentsResponse } from "./service";
+import type { ListAssignmentsRequest } from "./service";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { GetAssignmentResponse } from "./service";
 import type { GetAssignmentRequest } from "./service";
@@ -39,6 +41,12 @@ export interface IMetadataClient {
      * @generated from protobuf rpc: GetAssignment
      */
     getAssignment(input: GetAssignmentRequest, options?: RpcOptions): UnaryCall<GetAssignmentRequest, GetAssignmentResponse>;
+    /**
+     * ListAssignments returns metadata for all assignments.
+     *
+     * @generated from protobuf rpc: ListAssignments
+     */
+    listAssignments(input: ListAssignmentsRequest, options?: RpcOptions): UnaryCall<ListAssignmentsRequest, ListAssignmentsResponse>;
 }
 /**
  * Metadata service for retrieving assignment metadata.
@@ -59,6 +67,15 @@ export class MetadataClient implements IMetadataClient, ServiceInfo {
     getAssignment(input: GetAssignmentRequest, options?: RpcOptions): UnaryCall<GetAssignmentRequest, GetAssignmentResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetAssignmentRequest, GetAssignmentResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListAssignments returns metadata for all assignments.
+     *
+     * @generated from protobuf rpc: ListAssignments
+     */
+    listAssignments(input: ListAssignmentsRequest, options?: RpcOptions): UnaryCall<ListAssignmentsRequest, ListAssignmentsResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListAssignmentsRequest, ListAssignmentsResponse>("unary", this._transport, method, opt, input);
     }
 }
 /**
