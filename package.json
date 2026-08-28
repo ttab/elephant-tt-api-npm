@@ -2,7 +2,7 @@
   "name": "@ttab/elephant-tt-api",
   "private": false,
   "license": "MIT",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "type": "module",
   "exports": {
     "./baboon": {
@@ -68,29 +68,25 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/ttab"
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ttab/elephant-tt-api-npm.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:baboon": "tsdown ./src/baboon/index.ts --format cjs,esm --dts --outDir ./dist/baboon",
-    "build:eidos": "tsdown ./src/eidos/index.ts --format cjs,esm --dts --outDir ./dist/eidos",
-    "build:everysport": "tsdown ./src/everysport/index.ts --format cjs,esm --dts --outDir ./dist/everysport",
-    "build:genai": "tsdown ./src/genai/index.ts --format cjs,esm --dts --outDir ./dist/genai",
-    "build:ntb": "tsdown ./src/ntb/index.ts --format cjs,esm --dts --outDir ./dist/ntb",
-    "build:wires": "tsdown ./src/wires/index.ts --format cjs,esm --dts --outDir ./dist/wires",
-    "build": "npm run build:baboon && npm run build:eidos && npm run build:everysport && npm run build:genai && npm run build:ntb && npm run build:wires",
-    "update": "bash .github/workflows/update.sh",
-    "prepublish": "npm run build"
+    "test": "echo \"no tests\"",
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm run typecheck && tsdown",
+    "update": "bash scripts/update.sh",
+    "prepublish": "pnpm run build"
   },
   "author": "",
   "description": "",
   "devDependencies": {
     "@protobuf-ts/plugin": "^2.11.1",
-    "tsdown": "^0.22.0"
+    "tsdown": "^0.22.14",
+    "typescript": "^6.0.3"
   },
   "files": [
     "dist"

@@ -6,10 +6,10 @@
 import { ServiceType } from "@protobuf-ts/runtime-rpc";
 import type { BinaryWriteOptions } from "@protobuf-ts/runtime";
 import type { IBinaryWriter } from "@protobuf-ts/runtime";
-import { WireType } from "@protobuf-ts/runtime";
 import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import { UnknownFieldHandler } from "@protobuf-ts/runtime";
+import { WireType } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
@@ -48,6 +48,14 @@ export interface ManualImportRequest {
      * @generated from protobuf field: bool force = 5
      */
     force: boolean;
+    /**
+     * Competitions only re-imports the events for the given competition static
+     * IDs. Combines with competition: an event matches if its static ID is in
+     * either. Optional.
+     *
+     * @generated from protobuf field: repeated int64 competitions = 6
+     */
+    competitions: bigint[];
 }
 /**
  * @generated from protobuf message ttab.everysport.ManualImportResponse
@@ -60,6 +68,749 @@ export interface ManualImportResponse {
      */
     queuedImports: bigint;
 }
+/**
+ * @generated from protobuf message ttab.everysport.ListPendingImportsRequest
+ */
+export interface ListPendingImportsRequest {
+    /**
+     * OnlyEnabled excludes the competitions that wouldn't import anyway, which
+     * is every entry that isn't enabled. Optional.
+     *
+     * @generated from protobuf field: bool only_enabled = 1
+     */
+    onlyEnabled: boolean;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListPendingImportsResponse
+ */
+export interface ListPendingImportsResponse {
+    /**
+     * Imports are the competitions with skipped entries, ordered by sport and
+     * competition name.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.PendingImport imports = 1
+     */
+    imports: PendingImport[];
+}
+/**
+ * PendingImport is a competition with calendar entries that the service saw and
+ * skipped, because the competition or its sport was not enabled at the time.
+ * Enabling the competition does not import them: the entries have gone past in
+ * the update feed, and only a manual import brings them back. An entry stops
+ * being counted as soon as it is imported, so the list empties itself as the
+ * re-imports land.
+ *
+ * @generated from protobuf message ttab.everysport.PendingImport
+ */
+export interface PendingImport {
+    /**
+     * SportID is the Everysport ID of the sport the competition belongs to.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * SportName is the Everysport sport name.
+     *
+     * @generated from protobuf field: string sport_name = 2
+     */
+    sportName: string;
+    /**
+     * StaticID is the Everysport static ID of the competition.
+     *
+     * @generated from protobuf field: int64 static_id = 3
+     */
+    staticId: bigint;
+    /**
+     * Name is the Everysport competition name.
+     *
+     * @generated from protobuf field: string name = 4
+     */
+    name: string;
+    /**
+     * State is the review state the competition is in now.
+     *
+     * @generated from protobuf field: ttab.everysport.ConfigState state = 5
+     */
+    state: ConfigState;
+    /**
+     * FromDate is the date of the earliest skipped entry, as YYYY-MM-DD.
+     *
+     * @generated from protobuf field: string from_date = 6
+     */
+    fromDate: string;
+    /**
+     * ToDate is the date of the latest skipped entry, as YYYY-MM-DD.
+     *
+     * @generated from protobuf field: string to_date = 7
+     */
+    toDate: string;
+    /**
+     * Entries is the number of calendar entries that are still missing.
+     *
+     * @generated from protobuf field: int64 entries = 8
+     */
+    entries: bigint;
+    /**
+     * LastSeen is when an entry was last skipped, as RFC3339.
+     *
+     * @generated from protobuf field: string last_seen = 9
+     */
+    lastSeen: string;
+    /**
+     * Queued is how many of the missing entries are on the re-import queue
+     * already, waiting for the syncer to reach them. Counted from the queue
+     * itself, so it is what is actually pending rather than what was asked for.
+     *
+     * @generated from protobuf field: int64 queued = 10
+     */
+    queued: bigint;
+}
+/**
+ * ImportSettings is the editable part of a sport or competition
+ * configuration. All other fields identify the entry and are read only.
+ *
+ * @generated from protobuf message ttab.everysport.ImportSettings
+ */
+export interface ImportSettings {
+    /**
+     * State controls whether matching events are imported.
+     *
+     * @generated from protobuf field: ttab.everysport.ConfigState state = 1
+     */
+    state: ConfigState;
+    /**
+     * Newsvalue is the value of the core/newsvalue block of created events,
+     * 1 to 5. Required when enabling an entry.
+     *
+     * @generated from protobuf field: int32 newsvalue = 2
+     */
+    newsvalue: number;
+    /**
+     * MergeSetting is the strategy used to group entries into events, either
+     * "CategoryMerge" or "CompetitionMerge". Empty means that a competition
+     * uses the strategy of its sport, and that a sport uses "CategoryMerge".
+     *
+     * @generated from protobuf field: string merge_setting = 3
+     */
+    mergeSetting: string;
+    /**
+     * MergeEvents controls whether several calendar entries for the same day
+     * are merged into a single event document.
+     *
+     * @generated from protobuf field: bool merge_events = 4
+     */
+    mergeEvents: boolean;
+    /**
+     * Sport is the list of TT media topic names that events are linked to
+     * through core/category links, in addition to the generic "Sport" topic.
+     * Empty means that a competition uses the topics of its sport, and that a
+     * sport uses its own name.
+     *
+     * @generated from protobuf field: repeated string sport = 5
+     */
+    sport: string[];
+    /**
+     * Comment is a free text note for whoever configures the import.
+     *
+     * @generated from protobuf field: string comment = 6
+     */
+    comment: string;
+}
+/**
+ * ConfigWarning is a problem with a configuration entry that doesn't stop it
+ * from being saved.
+ *
+ * @generated from protobuf message ttab.everysport.ConfigWarning
+ */
+export interface ConfigWarning {
+    /**
+     * Code identifies the kind of problem, f.ex. "unresolved_sport_name".
+     *
+     * @generated from protobuf field: string code = 1
+     */
+    code: string;
+    /**
+     * Field is the name of the offending settings field.
+     *
+     * @generated from protobuf field: string field = 2
+     */
+    field: string;
+    /**
+     * Message is a human readable description of the problem.
+     *
+     * @generated from protobuf field: string message = 3
+     */
+    message: string;
+}
+/**
+ * SportConfig is the import configuration for an Everysport sport.
+ *
+ * @generated from protobuf message ttab.everysport.SportConfig
+ */
+export interface SportConfig {
+    /**
+     * ID is the Everysport sport ID.
+     *
+     * @generated from protobuf field: int64 id = 1
+     */
+    id: bigint;
+    /**
+     * Name is the Everysport sport name.
+     *
+     * @generated from protobuf field: string name = 2
+     */
+    name: string;
+    /**
+     * Slug is the Everysport sport slug.
+     *
+     * @generated from protobuf field: string slug = 3
+     */
+    slug: string;
+    /**
+     * Settings is the editable configuration of the sport.
+     *
+     * @generated from protobuf field: ttab.everysport.ImportSettings settings = 4
+     */
+    settings?: ImportSettings;
+    /**
+     * PendingCompetitions is the number of competitions of the sport that are
+     * awaiting review.
+     *
+     * @generated from protobuf field: int64 pending_competitions = 5
+     */
+    pendingCompetitions: bigint;
+    /**
+     * Seen is when the sport was last listed by Everysport, as RFC3339.
+     *
+     * @generated from protobuf field: string seen = 6
+     */
+    seen: string;
+    /**
+     * Updated is when the settings last changed, as RFC3339.
+     *
+     * @generated from protobuf field: string updated = 7
+     */
+    updated: string;
+    /**
+     * UpdatedBy is the subject that last changed the settings.
+     *
+     * @generated from protobuf field: string updated_by = 8
+     */
+    updatedBy: string;
+}
+/**
+ * CategoryConfig is an Everysport competition category. The category tier
+ * carries no import settings, it only groups competitions under a sport.
+ *
+ * @generated from protobuf message ttab.everysport.CategoryConfig
+ */
+export interface CategoryConfig {
+    /**
+     * ID is the Everysport competition category ID.
+     *
+     * @generated from protobuf field: int64 id = 1
+     */
+    id: bigint;
+    /**
+     * SportID is the Everysport ID of the sport the category belongs to.
+     *
+     * @generated from protobuf field: int64 sport_id = 2
+     */
+    sportId: bigint;
+    /**
+     * Name is the Everysport category name.
+     *
+     * @generated from protobuf field: string name = 3
+     */
+    name: string;
+    /**
+     * Gender is the gender category slug, if any.
+     *
+     * @generated from protobuf field: string gender = 4
+     */
+    gender: string;
+    /**
+     * Comment is a free text note for whoever configures the import.
+     *
+     * @generated from protobuf field: string comment = 5
+     */
+    comment: string;
+    /**
+     * Seen is when the category was last listed by Everysport, as RFC3339.
+     *
+     * @generated from protobuf field: string seen = 6
+     */
+    seen: string;
+    /**
+     * Updated is when the comment last changed, as RFC3339.
+     *
+     * @generated from protobuf field: string updated = 7
+     */
+    updated: string;
+    /**
+     * UpdatedBy is the subject that last changed the comment.
+     *
+     * @generated from protobuf field: string updated_by = 8
+     */
+    updatedBy: string;
+}
+/**
+ * CompetitionConfig is the import configuration for an Everysport
+ * competition. Competitions are identified by their static ID, the
+ * competition ID changes between seasons.
+ *
+ * @generated from protobuf message ttab.everysport.CompetitionConfig
+ */
+export interface CompetitionConfig {
+    /**
+     * SportID is the Everysport ID of the sport the competition belongs to.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * StaticID is the Everysport static ID of the competition.
+     *
+     * @generated from protobuf field: int64 static_id = 2
+     */
+    staticId: bigint;
+    /**
+     * CompetitionID is the Everysport competition ID we saw last.
+     *
+     * @generated from protobuf field: int64 competition_id = 3
+     */
+    competitionId: bigint;
+    /**
+     * CategoryID is the Everysport ID of the competition category.
+     *
+     * @generated from protobuf field: int64 category_id = 4
+     */
+    categoryId: bigint;
+    /**
+     * Name is the Everysport competition name.
+     *
+     * @generated from protobuf field: string name = 5
+     */
+    name: string;
+    /**
+     * FullName is the full Everysport competition name.
+     *
+     * @generated from protobuf field: string full_name = 6
+     */
+    fullName: string;
+    /**
+     * Gender is the gender category slug, if any.
+     *
+     * @generated from protobuf field: string gender = 7
+     */
+    gender: string;
+    /**
+     * Settings is the editable configuration of the competition.
+     *
+     * @generated from protobuf field: ttab.everysport.ImportSettings settings = 8
+     */
+    settings?: ImportSettings;
+    /**
+     * Seen is when the competition was last listed by Everysport, as RFC3339.
+     *
+     * @generated from protobuf field: string seen = 9
+     */
+    seen: string;
+    /**
+     * Updated is when the settings last changed, as RFC3339.
+     *
+     * @generated from protobuf field: string updated = 10
+     */
+    updated: string;
+    /**
+     * UpdatedBy is the subject that last changed the settings.
+     *
+     * @generated from protobuf field: string updated_by = 11
+     */
+    updatedBy: string;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListSportsRequest
+ */
+export interface ListSportsRequest {
+    /**
+     * State only returns sports in the given state. Optional.
+     *
+     * @generated from protobuf field: ttab.everysport.ConfigState state = 1
+     */
+    state: ConfigState;
+    /**
+     * Query only returns sports whose name matches. Optional.
+     *
+     * @generated from protobuf field: string query = 2
+     */
+    query: string;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListSportsResponse
+ */
+export interface ListSportsResponse {
+    /**
+     * Sports are the matching sports, ordered by name.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.SportConfig sports = 1
+     */
+    sports: SportConfig[];
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListCategoriesRequest
+ */
+export interface ListCategoriesRequest {
+    /**
+     * SportID is the sport to list categories for. Optional, all sports when
+     * left out.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListCategoriesResponse
+ */
+export interface ListCategoriesResponse {
+    /**
+     * Categories are the matching categories, ordered by sport and name.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.CategoryConfig categories = 1
+     */
+    categories: CategoryConfig[];
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListCompetitionsRequest
+ */
+export interface ListCompetitionsRequest {
+    /**
+     * SportID only returns competitions for the given sport. Optional.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * CategoryID only returns competitions in the given category. Optional.
+     *
+     * @generated from protobuf field: int64 category_id = 2
+     */
+    categoryId: bigint;
+    /**
+     * State only returns competitions in the given state. Optional.
+     *
+     * @generated from protobuf field: ttab.everysport.ConfigState state = 3
+     */
+    state: ConfigState;
+    /**
+     * Query only returns competitions whose name matches. Optional.
+     *
+     * @generated from protobuf field: string query = 4
+     */
+    query: string;
+    /**
+     * Stale only returns competitions that Everysport no longer lists.
+     *
+     * @generated from protobuf field: bool stale = 5
+     */
+    stale: boolean;
+    /**
+     * Offset is the number of competitions to skip. Optional.
+     *
+     * @generated from protobuf field: int64 offset = 6
+     */
+    offset: bigint;
+    /**
+     * Limit is the maximum number of competitions to return. Optional.
+     *
+     * @generated from protobuf field: int64 limit = 7
+     */
+    limit: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ListCompetitionsResponse
+ */
+export interface ListCompetitionsResponse {
+    /**
+     * Competitions are the matching competitions, ordered by name.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.CompetitionConfig competitions = 1
+     */
+    competitions: CompetitionConfig[];
+    /**
+     * Total is the number of competitions that match, ignoring offset and
+     * limit.
+     *
+     * @generated from protobuf field: int64 total = 2
+     */
+    total: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.GetSportRequest
+ */
+export interface GetSportRequest {
+    /**
+     * ID is the Everysport sport ID. Required.
+     *
+     * @generated from protobuf field: int64 id = 1
+     */
+    id: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.GetSportResponse
+ */
+export interface GetSportResponse {
+    /**
+     * Sport is the sport configuration.
+     *
+     * @generated from protobuf field: ttab.everysport.SportConfig sport = 1
+     */
+    sport?: SportConfig;
+}
+/**
+ * @generated from protobuf message ttab.everysport.GetCompetitionRequest
+ */
+export interface GetCompetitionRequest {
+    /**
+     * SportID is the Everysport sport ID. Required.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * StaticID is the Everysport competition static ID. Required.
+     *
+     * @generated from protobuf field: int64 static_id = 2
+     */
+    staticId: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.GetCompetitionResponse
+ */
+export interface GetCompetitionResponse {
+    /**
+     * Competition is the competition configuration.
+     *
+     * @generated from protobuf field: ttab.everysport.CompetitionConfig competition = 1
+     */
+    competition?: CompetitionConfig;
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateSportRequest
+ */
+export interface UpdateSportRequest {
+    /**
+     * ID is the Everysport sport ID. Required.
+     *
+     * @generated from protobuf field: int64 id = 1
+     */
+    id: bigint;
+    /**
+     * Settings replaces the current settings of the sport in full.
+     *
+     * @generated from protobuf field: ttab.everysport.ImportSettings settings = 2
+     */
+    settings?: ImportSettings;
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateSportResponse
+ */
+export interface UpdateSportResponse {
+    /**
+     * Sport is the updated sport configuration.
+     *
+     * @generated from protobuf field: ttab.everysport.SportConfig sport = 1
+     */
+    sport?: SportConfig;
+    /**
+     * Warnings are problems with the saved settings.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.ConfigWarning warnings = 2
+     */
+    warnings: ConfigWarning[];
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateCompetitionRequest
+ */
+export interface UpdateCompetitionRequest {
+    /**
+     * SportID is the Everysport sport ID. Required.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * StaticID is the Everysport competition static ID. Required.
+     *
+     * @generated from protobuf field: int64 static_id = 2
+     */
+    staticId: bigint;
+    /**
+     * Settings replaces the current settings of the competition in full.
+     *
+     * @generated from protobuf field: ttab.everysport.ImportSettings settings = 3
+     */
+    settings?: ImportSettings;
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateCompetitionResponse
+ */
+export interface UpdateCompetitionResponse {
+    /**
+     * Competition is the updated competition configuration.
+     *
+     * @generated from protobuf field: ttab.everysport.CompetitionConfig competition = 1
+     */
+    competition?: CompetitionConfig;
+    /**
+     * Warnings are problems with the saved settings.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.ConfigWarning warnings = 2
+     */
+    warnings: ConfigWarning[];
+}
+/**
+ * CompetitionRef identifies one competition. The static ID is unique on its
+ * own in practice, but the sport is what the configuration is keyed on.
+ *
+ * @generated from protobuf message ttab.everysport.CompetitionRef
+ */
+export interface CompetitionRef {
+    /**
+     * SportID is the Everysport sport ID. Required.
+     *
+     * @generated from protobuf field: int64 sport_id = 1
+     */
+    sportId: bigint;
+    /**
+     * StaticID is the Everysport competition static ID. Required.
+     *
+     * @generated from protobuf field: int64 static_id = 2
+     */
+    staticId: bigint;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ReviewCompetitionsRequest
+ */
+export interface ReviewCompetitionsRequest {
+    /**
+     * Competitions to decide. Required, and every one of them must exist.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.CompetitionRef competitions = 1
+     */
+    competitions: CompetitionRef[];
+    /**
+     * State to put them in. Required, and STATE_PENDING is rejected: this is
+     * the call that takes entries out of the review queue.
+     *
+     * @generated from protobuf field: ttab.everysport.ConfigState state = 2
+     */
+    state: ConfigState;
+    /**
+     * Newsvalue to give them. Required when the state is STATE_ENABLED, ignored
+     * otherwise.
+     *
+     * @generated from protobuf field: int32 newsvalue = 3
+     */
+    newsvalue: number;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ReviewCompetitionsResponse
+ */
+export interface ReviewCompetitionsResponse {
+    /**
+     * Updated is the number of competitions that were changed.
+     *
+     * @generated from protobuf field: int64 updated = 1
+     */
+    updated: bigint;
+    /**
+     * Warnings are problems with the settings that were saved.
+     *
+     * @generated from protobuf field: repeated ttab.everysport.ConfigWarning warnings = 2
+     */
+    warnings: ConfigWarning[];
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateCategoryRequest
+ */
+export interface UpdateCategoryRequest {
+    /**
+     * ID is the Everysport competition category ID. Required.
+     *
+     * @generated from protobuf field: int64 id = 1
+     */
+    id: bigint;
+    /**
+     * Comment replaces the current comment of the category.
+     *
+     * @generated from protobuf field: string comment = 2
+     */
+    comment: string;
+}
+/**
+ * @generated from protobuf message ttab.everysport.UpdateCategoryResponse
+ */
+export interface UpdateCategoryResponse {
+    /**
+     * Category is the updated category.
+     *
+     * @generated from protobuf field: ttab.everysport.CategoryConfig category = 1
+     */
+    category?: CategoryConfig;
+}
+/**
+ * @generated from protobuf message ttab.everysport.ExportConfigRequest
+ */
+export interface ExportConfigRequest {
+}
+/**
+ * @generated from protobuf message ttab.everysport.ExportConfigResponse
+ */
+export interface ExportConfigResponse {
+    /**
+     * CSV is the full configuration as a CSV file.
+     *
+     * @generated from protobuf field: bytes csv = 1
+     */
+    csv: Uint8Array;
+}
+/**
+ * ConfigState is the review state of a configuration entry. Entries that the
+ * service discovers on its own start out as pending.
+ *
+ * @generated from protobuf enum ttab.everysport.ConfigState
+ */
+export enum ConfigState {
+    /**
+     * STATE_UNSPECIFIED is the default zero value. Used as "any state" when
+     * filtering, and rejected when updating an entry.
+     *
+     * @generated from protobuf enum value: STATE_UNSPECIFIED = 0;
+     */
+    STATE_UNSPECIFIED = 0,
+    /**
+     * STATE_PENDING marks an entry that nobody has reviewed yet. Nothing pending
+     * is imported, and the entries that were skipped while it was pending are
+     * listed by ListPendingImports.
+     *
+     * @generated from protobuf enum value: STATE_PENDING = 1;
+     */
+    STATE_PENDING = 1,
+    /**
+     * STATE_ENABLED means that matching events are imported.
+     *
+     * @generated from protobuf enum value: STATE_ENABLED = 2;
+     */
+    STATE_ENABLED = 2,
+    /**
+     * STATE_DISABLED means that matching events are not imported.
+     *
+     * @generated from protobuf enum value: STATE_DISABLED = 3;
+     */
+    STATE_DISABLED = 3
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class ManualImportRequest$Type extends MessageType<ManualImportRequest> {
     constructor() {
@@ -68,7 +819,8 @@ class ManualImportRequest$Type extends MessageType<ManualImportRequest> {
             { no: 2, name: "to_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "category", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
             { no: 4, name: "competition", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
-            { no: 5, name: "force", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 5, name: "force", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "competitions", kind: "scalar", repeat: 1 /*RepeatType.PACKED*/, T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
         ]);
     }
     create(value?: PartialMessage<ManualImportRequest>): ManualImportRequest {
@@ -78,6 +830,7 @@ class ManualImportRequest$Type extends MessageType<ManualImportRequest> {
         message.category = 0n;
         message.competition = 0n;
         message.force = false;
+        message.competitions = [];
         if (value !== undefined)
             reflectionMergePartial<ManualImportRequest>(this, message, value);
         return message;
@@ -101,6 +854,13 @@ class ManualImportRequest$Type extends MessageType<ManualImportRequest> {
                     break;
                 case /* bool force */ 5:
                     message.force = reader.bool();
+                    break;
+                case /* repeated int64 competitions */ 6:
+                    if (wireType === WireType.LengthDelimited)
+                        for (let e = reader.int32() + reader.pos; reader.pos < e;)
+                            message.competitions.push(reader.int64().toBigInt());
+                    else
+                        message.competitions.push(reader.int64().toBigInt());
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -129,6 +889,13 @@ class ManualImportRequest$Type extends MessageType<ManualImportRequest> {
         /* bool force = 5; */
         if (message.force !== false)
             writer.tag(5, WireType.Varint).bool(message.force);
+        /* repeated int64 competitions = 6; */
+        if (message.competitions.length) {
+            writer.tag(6, WireType.LengthDelimited).fork();
+            for (let i = 0; i < message.competitions.length; i++)
+                writer.int64(message.competitions[i]);
+            writer.join();
+        }
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -186,9 +953,1837 @@ class ManualImportResponse$Type extends MessageType<ManualImportResponse> {
  * @generated MessageType for protobuf message ttab.everysport.ManualImportResponse
  */
 export const ManualImportResponse = new ManualImportResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListPendingImportsRequest$Type extends MessageType<ListPendingImportsRequest> {
+    constructor() {
+        super("ttab.everysport.ListPendingImportsRequest", [
+            { no: 1, name: "only_enabled", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListPendingImportsRequest>): ListPendingImportsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.onlyEnabled = false;
+        if (value !== undefined)
+            reflectionMergePartial<ListPendingImportsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListPendingImportsRequest): ListPendingImportsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool only_enabled */ 1:
+                    message.onlyEnabled = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListPendingImportsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool only_enabled = 1; */
+        if (message.onlyEnabled !== false)
+            writer.tag(1, WireType.Varint).bool(message.onlyEnabled);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListPendingImportsRequest
+ */
+export const ListPendingImportsRequest = new ListPendingImportsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListPendingImportsResponse$Type extends MessageType<ListPendingImportsResponse> {
+    constructor() {
+        super("ttab.everysport.ListPendingImportsResponse", [
+            { no: 1, name: "imports", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PendingImport }
+        ]);
+    }
+    create(value?: PartialMessage<ListPendingImportsResponse>): ListPendingImportsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.imports = [];
+        if (value !== undefined)
+            reflectionMergePartial<ListPendingImportsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListPendingImportsResponse): ListPendingImportsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.everysport.PendingImport imports */ 1:
+                    message.imports.push(PendingImport.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListPendingImportsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.everysport.PendingImport imports = 1; */
+        for (let i = 0; i < message.imports.length; i++)
+            PendingImport.internalBinaryWrite(message.imports[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListPendingImportsResponse
+ */
+export const ListPendingImportsResponse = new ListPendingImportsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PendingImport$Type extends MessageType<PendingImport> {
+    constructor() {
+        super("ttab.everysport.PendingImport", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "sport_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "static_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 4, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "state", kind: "enum", T: () => ["ttab.everysport.ConfigState", ConfigState] },
+            { no: 6, name: "from_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "to_date", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "entries", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 9, name: "last_seen", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "queued", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<PendingImport>): PendingImport {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.sportName = "";
+        message.staticId = 0n;
+        message.name = "";
+        message.state = 0;
+        message.fromDate = "";
+        message.toDate = "";
+        message.entries = 0n;
+        message.lastSeen = "";
+        message.queued = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<PendingImport>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PendingImport): PendingImport {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* string sport_name */ 2:
+                    message.sportName = reader.string();
+                    break;
+                case /* int64 static_id */ 3:
+                    message.staticId = reader.int64().toBigInt();
+                    break;
+                case /* string name */ 4:
+                    message.name = reader.string();
+                    break;
+                case /* ttab.everysport.ConfigState state */ 5:
+                    message.state = reader.int32();
+                    break;
+                case /* string from_date */ 6:
+                    message.fromDate = reader.string();
+                    break;
+                case /* string to_date */ 7:
+                    message.toDate = reader.string();
+                    break;
+                case /* int64 entries */ 8:
+                    message.entries = reader.int64().toBigInt();
+                    break;
+                case /* string last_seen */ 9:
+                    message.lastSeen = reader.string();
+                    break;
+                case /* int64 queued */ 10:
+                    message.queued = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PendingImport, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* string sport_name = 2; */
+        if (message.sportName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.sportName);
+        /* int64 static_id = 3; */
+        if (message.staticId !== 0n)
+            writer.tag(3, WireType.Varint).int64(message.staticId);
+        /* string name = 4; */
+        if (message.name !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.name);
+        /* ttab.everysport.ConfigState state = 5; */
+        if (message.state !== 0)
+            writer.tag(5, WireType.Varint).int32(message.state);
+        /* string from_date = 6; */
+        if (message.fromDate !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.fromDate);
+        /* string to_date = 7; */
+        if (message.toDate !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.toDate);
+        /* int64 entries = 8; */
+        if (message.entries !== 0n)
+            writer.tag(8, WireType.Varint).int64(message.entries);
+        /* string last_seen = 9; */
+        if (message.lastSeen !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.lastSeen);
+        /* int64 queued = 10; */
+        if (message.queued !== 0n)
+            writer.tag(10, WireType.Varint).int64(message.queued);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.PendingImport
+ */
+export const PendingImport = new PendingImport$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ImportSettings$Type extends MessageType<ImportSettings> {
+    constructor() {
+        super("ttab.everysport.ImportSettings", [
+            { no: 1, name: "state", kind: "enum", T: () => ["ttab.everysport.ConfigState", ConfigState] },
+            { no: 2, name: "newsvalue", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "merge_setting", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "merge_events", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 5, name: "sport", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ImportSettings>): ImportSettings {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.state = 0;
+        message.newsvalue = 0;
+        message.mergeSetting = "";
+        message.mergeEvents = false;
+        message.sport = [];
+        message.comment = "";
+        if (value !== undefined)
+            reflectionMergePartial<ImportSettings>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ImportSettings): ImportSettings {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.ConfigState state */ 1:
+                    message.state = reader.int32();
+                    break;
+                case /* int32 newsvalue */ 2:
+                    message.newsvalue = reader.int32();
+                    break;
+                case /* string merge_setting */ 3:
+                    message.mergeSetting = reader.string();
+                    break;
+                case /* bool merge_events */ 4:
+                    message.mergeEvents = reader.bool();
+                    break;
+                case /* repeated string sport */ 5:
+                    message.sport.push(reader.string());
+                    break;
+                case /* string comment */ 6:
+                    message.comment = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ImportSettings, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.ConfigState state = 1; */
+        if (message.state !== 0)
+            writer.tag(1, WireType.Varint).int32(message.state);
+        /* int32 newsvalue = 2; */
+        if (message.newsvalue !== 0)
+            writer.tag(2, WireType.Varint).int32(message.newsvalue);
+        /* string merge_setting = 3; */
+        if (message.mergeSetting !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.mergeSetting);
+        /* bool merge_events = 4; */
+        if (message.mergeEvents !== false)
+            writer.tag(4, WireType.Varint).bool(message.mergeEvents);
+        /* repeated string sport = 5; */
+        for (let i = 0; i < message.sport.length; i++)
+            writer.tag(5, WireType.LengthDelimited).string(message.sport[i]);
+        /* string comment = 6; */
+        if (message.comment !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.comment);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ImportSettings
+ */
+export const ImportSettings = new ImportSettings$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ConfigWarning$Type extends MessageType<ConfigWarning> {
+    constructor() {
+        super("ttab.everysport.ConfigWarning", [
+            { no: 1, name: "code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "field", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ConfigWarning>): ConfigWarning {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.code = "";
+        message.field = "";
+        message.message = "";
+        if (value !== undefined)
+            reflectionMergePartial<ConfigWarning>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ConfigWarning): ConfigWarning {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string code */ 1:
+                    message.code = reader.string();
+                    break;
+                case /* string field */ 2:
+                    message.field = reader.string();
+                    break;
+                case /* string message */ 3:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ConfigWarning, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string code = 1; */
+        if (message.code !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.code);
+        /* string field = 2; */
+        if (message.field !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.field);
+        /* string message = 3; */
+        if (message.message !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ConfigWarning
+ */
+export const ConfigWarning = new ConfigWarning$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SportConfig$Type extends MessageType<SportConfig> {
+    constructor() {
+        super("ttab.everysport.SportConfig", [
+            { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "settings", kind: "message", T: () => ImportSettings },
+            { no: 5, name: "pending_competitions", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 6, name: "seen", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "updated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "updated_by", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SportConfig>): SportConfig {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0n;
+        message.name = "";
+        message.slug = "";
+        message.pendingCompetitions = 0n;
+        message.seen = "";
+        message.updated = "";
+        message.updatedBy = "";
+        if (value !== undefined)
+            reflectionMergePartial<SportConfig>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SportConfig): SportConfig {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 id */ 1:
+                    message.id = reader.int64().toBigInt();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* string slug */ 3:
+                    message.slug = reader.string();
+                    break;
+                case /* ttab.everysport.ImportSettings settings */ 4:
+                    message.settings = ImportSettings.internalBinaryRead(reader, reader.uint32(), options, message.settings);
+                    break;
+                case /* int64 pending_competitions */ 5:
+                    message.pendingCompetitions = reader.int64().toBigInt();
+                    break;
+                case /* string seen */ 6:
+                    message.seen = reader.string();
+                    break;
+                case /* string updated */ 7:
+                    message.updated = reader.string();
+                    break;
+                case /* string updated_by */ 8:
+                    message.updatedBy = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SportConfig, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 id = 1; */
+        if (message.id !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.id);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string slug = 3; */
+        if (message.slug !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.slug);
+        /* ttab.everysport.ImportSettings settings = 4; */
+        if (message.settings)
+            ImportSettings.internalBinaryWrite(message.settings, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* int64 pending_competitions = 5; */
+        if (message.pendingCompetitions !== 0n)
+            writer.tag(5, WireType.Varint).int64(message.pendingCompetitions);
+        /* string seen = 6; */
+        if (message.seen !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.seen);
+        /* string updated = 7; */
+        if (message.updated !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.updated);
+        /* string updated_by = 8; */
+        if (message.updatedBy !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.updatedBy);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.SportConfig
+ */
+export const SportConfig = new SportConfig$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CategoryConfig$Type extends MessageType<CategoryConfig> {
+    constructor() {
+        super("ttab.everysport.CategoryConfig", [
+            { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "gender", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "seen", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "updated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "updated_by", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CategoryConfig>): CategoryConfig {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0n;
+        message.sportId = 0n;
+        message.name = "";
+        message.gender = "";
+        message.comment = "";
+        message.seen = "";
+        message.updated = "";
+        message.updatedBy = "";
+        if (value !== undefined)
+            reflectionMergePartial<CategoryConfig>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CategoryConfig): CategoryConfig {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 id */ 1:
+                    message.id = reader.int64().toBigInt();
+                    break;
+                case /* int64 sport_id */ 2:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* string name */ 3:
+                    message.name = reader.string();
+                    break;
+                case /* string gender */ 4:
+                    message.gender = reader.string();
+                    break;
+                case /* string comment */ 5:
+                    message.comment = reader.string();
+                    break;
+                case /* string seen */ 6:
+                    message.seen = reader.string();
+                    break;
+                case /* string updated */ 7:
+                    message.updated = reader.string();
+                    break;
+                case /* string updated_by */ 8:
+                    message.updatedBy = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CategoryConfig, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 id = 1; */
+        if (message.id !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.id);
+        /* int64 sport_id = 2; */
+        if (message.sportId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.sportId);
+        /* string name = 3; */
+        if (message.name !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.name);
+        /* string gender = 4; */
+        if (message.gender !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.gender);
+        /* string comment = 5; */
+        if (message.comment !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.comment);
+        /* string seen = 6; */
+        if (message.seen !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.seen);
+        /* string updated = 7; */
+        if (message.updated !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.updated);
+        /* string updated_by = 8; */
+        if (message.updatedBy !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.updatedBy);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.CategoryConfig
+ */
+export const CategoryConfig = new CategoryConfig$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CompetitionConfig$Type extends MessageType<CompetitionConfig> {
+    constructor() {
+        super("ttab.everysport.CompetitionConfig", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "static_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "competition_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 4, name: "category_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 5, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "full_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "gender", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "settings", kind: "message", T: () => ImportSettings },
+            { no: 9, name: "seen", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "updated", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "updated_by", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CompetitionConfig>): CompetitionConfig {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.staticId = 0n;
+        message.competitionId = 0n;
+        message.categoryId = 0n;
+        message.name = "";
+        message.fullName = "";
+        message.gender = "";
+        message.seen = "";
+        message.updated = "";
+        message.updatedBy = "";
+        if (value !== undefined)
+            reflectionMergePartial<CompetitionConfig>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CompetitionConfig): CompetitionConfig {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* int64 static_id */ 2:
+                    message.staticId = reader.int64().toBigInt();
+                    break;
+                case /* int64 competition_id */ 3:
+                    message.competitionId = reader.int64().toBigInt();
+                    break;
+                case /* int64 category_id */ 4:
+                    message.categoryId = reader.int64().toBigInt();
+                    break;
+                case /* string name */ 5:
+                    message.name = reader.string();
+                    break;
+                case /* string full_name */ 6:
+                    message.fullName = reader.string();
+                    break;
+                case /* string gender */ 7:
+                    message.gender = reader.string();
+                    break;
+                case /* ttab.everysport.ImportSettings settings */ 8:
+                    message.settings = ImportSettings.internalBinaryRead(reader, reader.uint32(), options, message.settings);
+                    break;
+                case /* string seen */ 9:
+                    message.seen = reader.string();
+                    break;
+                case /* string updated */ 10:
+                    message.updated = reader.string();
+                    break;
+                case /* string updated_by */ 11:
+                    message.updatedBy = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CompetitionConfig, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* int64 static_id = 2; */
+        if (message.staticId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.staticId);
+        /* int64 competition_id = 3; */
+        if (message.competitionId !== 0n)
+            writer.tag(3, WireType.Varint).int64(message.competitionId);
+        /* int64 category_id = 4; */
+        if (message.categoryId !== 0n)
+            writer.tag(4, WireType.Varint).int64(message.categoryId);
+        /* string name = 5; */
+        if (message.name !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.name);
+        /* string full_name = 6; */
+        if (message.fullName !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.fullName);
+        /* string gender = 7; */
+        if (message.gender !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.gender);
+        /* ttab.everysport.ImportSettings settings = 8; */
+        if (message.settings)
+            ImportSettings.internalBinaryWrite(message.settings, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* string seen = 9; */
+        if (message.seen !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.seen);
+        /* string updated = 10; */
+        if (message.updated !== "")
+            writer.tag(10, WireType.LengthDelimited).string(message.updated);
+        /* string updated_by = 11; */
+        if (message.updatedBy !== "")
+            writer.tag(11, WireType.LengthDelimited).string(message.updatedBy);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.CompetitionConfig
+ */
+export const CompetitionConfig = new CompetitionConfig$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListSportsRequest$Type extends MessageType<ListSportsRequest> {
+    constructor() {
+        super("ttab.everysport.ListSportsRequest", [
+            { no: 1, name: "state", kind: "enum", T: () => ["ttab.everysport.ConfigState", ConfigState] },
+            { no: 2, name: "query", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListSportsRequest>): ListSportsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.state = 0;
+        message.query = "";
+        if (value !== undefined)
+            reflectionMergePartial<ListSportsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListSportsRequest): ListSportsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.ConfigState state */ 1:
+                    message.state = reader.int32();
+                    break;
+                case /* string query */ 2:
+                    message.query = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListSportsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.ConfigState state = 1; */
+        if (message.state !== 0)
+            writer.tag(1, WireType.Varint).int32(message.state);
+        /* string query = 2; */
+        if (message.query !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.query);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListSportsRequest
+ */
+export const ListSportsRequest = new ListSportsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListSportsResponse$Type extends MessageType<ListSportsResponse> {
+    constructor() {
+        super("ttab.everysport.ListSportsResponse", [
+            { no: 1, name: "sports", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => SportConfig }
+        ]);
+    }
+    create(value?: PartialMessage<ListSportsResponse>): ListSportsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sports = [];
+        if (value !== undefined)
+            reflectionMergePartial<ListSportsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListSportsResponse): ListSportsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.everysport.SportConfig sports */ 1:
+                    message.sports.push(SportConfig.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListSportsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.everysport.SportConfig sports = 1; */
+        for (let i = 0; i < message.sports.length; i++)
+            SportConfig.internalBinaryWrite(message.sports[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListSportsResponse
+ */
+export const ListSportsResponse = new ListSportsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListCategoriesRequest$Type extends MessageType<ListCategoriesRequest> {
+    constructor() {
+        super("ttab.everysport.ListCategoriesRequest", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListCategoriesRequest>): ListCategoriesRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<ListCategoriesRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListCategoriesRequest): ListCategoriesRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListCategoriesRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListCategoriesRequest
+ */
+export const ListCategoriesRequest = new ListCategoriesRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListCategoriesResponse$Type extends MessageType<ListCategoriesResponse> {
+    constructor() {
+        super("ttab.everysport.ListCategoriesResponse", [
+            { no: 1, name: "categories", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => CategoryConfig }
+        ]);
+    }
+    create(value?: PartialMessage<ListCategoriesResponse>): ListCategoriesResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.categories = [];
+        if (value !== undefined)
+            reflectionMergePartial<ListCategoriesResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListCategoriesResponse): ListCategoriesResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.everysport.CategoryConfig categories */ 1:
+                    message.categories.push(CategoryConfig.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListCategoriesResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.everysport.CategoryConfig categories = 1; */
+        for (let i = 0; i < message.categories.length; i++)
+            CategoryConfig.internalBinaryWrite(message.categories[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListCategoriesResponse
+ */
+export const ListCategoriesResponse = new ListCategoriesResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListCompetitionsRequest$Type extends MessageType<ListCompetitionsRequest> {
+    constructor() {
+        super("ttab.everysport.ListCompetitionsRequest", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "category_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "state", kind: "enum", T: () => ["ttab.everysport.ConfigState", ConfigState] },
+            { no: 4, name: "query", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "stale", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "offset", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 7, name: "limit", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListCompetitionsRequest>): ListCompetitionsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.categoryId = 0n;
+        message.state = 0;
+        message.query = "";
+        message.stale = false;
+        message.offset = 0n;
+        message.limit = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<ListCompetitionsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListCompetitionsRequest): ListCompetitionsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* int64 category_id */ 2:
+                    message.categoryId = reader.int64().toBigInt();
+                    break;
+                case /* ttab.everysport.ConfigState state */ 3:
+                    message.state = reader.int32();
+                    break;
+                case /* string query */ 4:
+                    message.query = reader.string();
+                    break;
+                case /* bool stale */ 5:
+                    message.stale = reader.bool();
+                    break;
+                case /* int64 offset */ 6:
+                    message.offset = reader.int64().toBigInt();
+                    break;
+                case /* int64 limit */ 7:
+                    message.limit = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListCompetitionsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* int64 category_id = 2; */
+        if (message.categoryId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.categoryId);
+        /* ttab.everysport.ConfigState state = 3; */
+        if (message.state !== 0)
+            writer.tag(3, WireType.Varint).int32(message.state);
+        /* string query = 4; */
+        if (message.query !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.query);
+        /* bool stale = 5; */
+        if (message.stale !== false)
+            writer.tag(5, WireType.Varint).bool(message.stale);
+        /* int64 offset = 6; */
+        if (message.offset !== 0n)
+            writer.tag(6, WireType.Varint).int64(message.offset);
+        /* int64 limit = 7; */
+        if (message.limit !== 0n)
+            writer.tag(7, WireType.Varint).int64(message.limit);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListCompetitionsRequest
+ */
+export const ListCompetitionsRequest = new ListCompetitionsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListCompetitionsResponse$Type extends MessageType<ListCompetitionsResponse> {
+    constructor() {
+        super("ttab.everysport.ListCompetitionsResponse", [
+            { no: 1, name: "competitions", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => CompetitionConfig },
+            { no: 2, name: "total", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ListCompetitionsResponse>): ListCompetitionsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.competitions = [];
+        message.total = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<ListCompetitionsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListCompetitionsResponse): ListCompetitionsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.everysport.CompetitionConfig competitions */ 1:
+                    message.competitions.push(CompetitionConfig.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* int64 total */ 2:
+                    message.total = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListCompetitionsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.everysport.CompetitionConfig competitions = 1; */
+        for (let i = 0; i < message.competitions.length; i++)
+            CompetitionConfig.internalBinaryWrite(message.competitions[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* int64 total = 2; */
+        if (message.total !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.total);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ListCompetitionsResponse
+ */
+export const ListCompetitionsResponse = new ListCompetitionsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetSportRequest$Type extends MessageType<GetSportRequest> {
+    constructor() {
+        super("ttab.everysport.GetSportRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetSportRequest>): GetSportRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<GetSportRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetSportRequest): GetSportRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 id */ 1:
+                    message.id = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetSportRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 id = 1; */
+        if (message.id !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.GetSportRequest
+ */
+export const GetSportRequest = new GetSportRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetSportResponse$Type extends MessageType<GetSportResponse> {
+    constructor() {
+        super("ttab.everysport.GetSportResponse", [
+            { no: 1, name: "sport", kind: "message", T: () => SportConfig }
+        ]);
+    }
+    create(value?: PartialMessage<GetSportResponse>): GetSportResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetSportResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetSportResponse): GetSportResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.SportConfig sport */ 1:
+                    message.sport = SportConfig.internalBinaryRead(reader, reader.uint32(), options, message.sport);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetSportResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.SportConfig sport = 1; */
+        if (message.sport)
+            SportConfig.internalBinaryWrite(message.sport, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.GetSportResponse
+ */
+export const GetSportResponse = new GetSportResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetCompetitionRequest$Type extends MessageType<GetCompetitionRequest> {
+    constructor() {
+        super("ttab.everysport.GetCompetitionRequest", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "static_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetCompetitionRequest>): GetCompetitionRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.staticId = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<GetCompetitionRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetCompetitionRequest): GetCompetitionRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* int64 static_id */ 2:
+                    message.staticId = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetCompetitionRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* int64 static_id = 2; */
+        if (message.staticId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.staticId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.GetCompetitionRequest
+ */
+export const GetCompetitionRequest = new GetCompetitionRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetCompetitionResponse$Type extends MessageType<GetCompetitionResponse> {
+    constructor() {
+        super("ttab.everysport.GetCompetitionResponse", [
+            { no: 1, name: "competition", kind: "message", T: () => CompetitionConfig }
+        ]);
+    }
+    create(value?: PartialMessage<GetCompetitionResponse>): GetCompetitionResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<GetCompetitionResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetCompetitionResponse): GetCompetitionResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.CompetitionConfig competition */ 1:
+                    message.competition = CompetitionConfig.internalBinaryRead(reader, reader.uint32(), options, message.competition);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetCompetitionResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.CompetitionConfig competition = 1; */
+        if (message.competition)
+            CompetitionConfig.internalBinaryWrite(message.competition, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.GetCompetitionResponse
+ */
+export const GetCompetitionResponse = new GetCompetitionResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateSportRequest$Type extends MessageType<UpdateSportRequest> {
+    constructor() {
+        super("ttab.everysport.UpdateSportRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "settings", kind: "message", T: () => ImportSettings }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateSportRequest>): UpdateSportRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<UpdateSportRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateSportRequest): UpdateSportRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 id */ 1:
+                    message.id = reader.int64().toBigInt();
+                    break;
+                case /* ttab.everysport.ImportSettings settings */ 2:
+                    message.settings = ImportSettings.internalBinaryRead(reader, reader.uint32(), options, message.settings);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateSportRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 id = 1; */
+        if (message.id !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.id);
+        /* ttab.everysport.ImportSettings settings = 2; */
+        if (message.settings)
+            ImportSettings.internalBinaryWrite(message.settings, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateSportRequest
+ */
+export const UpdateSportRequest = new UpdateSportRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateSportResponse$Type extends MessageType<UpdateSportResponse> {
+    constructor() {
+        super("ttab.everysport.UpdateSportResponse", [
+            { no: 1, name: "sport", kind: "message", T: () => SportConfig },
+            { no: 2, name: "warnings", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ConfigWarning }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateSportResponse>): UpdateSportResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.warnings = [];
+        if (value !== undefined)
+            reflectionMergePartial<UpdateSportResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateSportResponse): UpdateSportResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.SportConfig sport */ 1:
+                    message.sport = SportConfig.internalBinaryRead(reader, reader.uint32(), options, message.sport);
+                    break;
+                case /* repeated ttab.everysport.ConfigWarning warnings */ 2:
+                    message.warnings.push(ConfigWarning.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateSportResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.SportConfig sport = 1; */
+        if (message.sport)
+            SportConfig.internalBinaryWrite(message.sport, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated ttab.everysport.ConfigWarning warnings = 2; */
+        for (let i = 0; i < message.warnings.length; i++)
+            ConfigWarning.internalBinaryWrite(message.warnings[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateSportResponse
+ */
+export const UpdateSportResponse = new UpdateSportResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateCompetitionRequest$Type extends MessageType<UpdateCompetitionRequest> {
+    constructor() {
+        super("ttab.everysport.UpdateCompetitionRequest", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "static_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 3, name: "settings", kind: "message", T: () => ImportSettings }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateCompetitionRequest>): UpdateCompetitionRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.staticId = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<UpdateCompetitionRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateCompetitionRequest): UpdateCompetitionRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* int64 static_id */ 2:
+                    message.staticId = reader.int64().toBigInt();
+                    break;
+                case /* ttab.everysport.ImportSettings settings */ 3:
+                    message.settings = ImportSettings.internalBinaryRead(reader, reader.uint32(), options, message.settings);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateCompetitionRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* int64 static_id = 2; */
+        if (message.staticId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.staticId);
+        /* ttab.everysport.ImportSettings settings = 3; */
+        if (message.settings)
+            ImportSettings.internalBinaryWrite(message.settings, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateCompetitionRequest
+ */
+export const UpdateCompetitionRequest = new UpdateCompetitionRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateCompetitionResponse$Type extends MessageType<UpdateCompetitionResponse> {
+    constructor() {
+        super("ttab.everysport.UpdateCompetitionResponse", [
+            { no: 1, name: "competition", kind: "message", T: () => CompetitionConfig },
+            { no: 2, name: "warnings", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ConfigWarning }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateCompetitionResponse>): UpdateCompetitionResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.warnings = [];
+        if (value !== undefined)
+            reflectionMergePartial<UpdateCompetitionResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateCompetitionResponse): UpdateCompetitionResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.CompetitionConfig competition */ 1:
+                    message.competition = CompetitionConfig.internalBinaryRead(reader, reader.uint32(), options, message.competition);
+                    break;
+                case /* repeated ttab.everysport.ConfigWarning warnings */ 2:
+                    message.warnings.push(ConfigWarning.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateCompetitionResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.CompetitionConfig competition = 1; */
+        if (message.competition)
+            CompetitionConfig.internalBinaryWrite(message.competition, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated ttab.everysport.ConfigWarning warnings = 2; */
+        for (let i = 0; i < message.warnings.length; i++)
+            ConfigWarning.internalBinaryWrite(message.warnings[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateCompetitionResponse
+ */
+export const UpdateCompetitionResponse = new UpdateCompetitionResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CompetitionRef$Type extends MessageType<CompetitionRef> {
+    constructor() {
+        super("ttab.everysport.CompetitionRef", [
+            { no: 1, name: "sport_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "static_id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CompetitionRef>): CompetitionRef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.sportId = 0n;
+        message.staticId = 0n;
+        if (value !== undefined)
+            reflectionMergePartial<CompetitionRef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CompetitionRef): CompetitionRef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 sport_id */ 1:
+                    message.sportId = reader.int64().toBigInt();
+                    break;
+                case /* int64 static_id */ 2:
+                    message.staticId = reader.int64().toBigInt();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CompetitionRef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 sport_id = 1; */
+        if (message.sportId !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.sportId);
+        /* int64 static_id = 2; */
+        if (message.staticId !== 0n)
+            writer.tag(2, WireType.Varint).int64(message.staticId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.CompetitionRef
+ */
+export const CompetitionRef = new CompetitionRef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ReviewCompetitionsRequest$Type extends MessageType<ReviewCompetitionsRequest> {
+    constructor() {
+        super("ttab.everysport.ReviewCompetitionsRequest", [
+            { no: 1, name: "competitions", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => CompetitionRef },
+            { no: 2, name: "state", kind: "enum", T: () => ["ttab.everysport.ConfigState", ConfigState] },
+            { no: 3, name: "newsvalue", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ReviewCompetitionsRequest>): ReviewCompetitionsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.competitions = [];
+        message.state = 0;
+        message.newsvalue = 0;
+        if (value !== undefined)
+            reflectionMergePartial<ReviewCompetitionsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ReviewCompetitionsRequest): ReviewCompetitionsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ttab.everysport.CompetitionRef competitions */ 1:
+                    message.competitions.push(CompetitionRef.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* ttab.everysport.ConfigState state */ 2:
+                    message.state = reader.int32();
+                    break;
+                case /* int32 newsvalue */ 3:
+                    message.newsvalue = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ReviewCompetitionsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ttab.everysport.CompetitionRef competitions = 1; */
+        for (let i = 0; i < message.competitions.length; i++)
+            CompetitionRef.internalBinaryWrite(message.competitions[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* ttab.everysport.ConfigState state = 2; */
+        if (message.state !== 0)
+            writer.tag(2, WireType.Varint).int32(message.state);
+        /* int32 newsvalue = 3; */
+        if (message.newsvalue !== 0)
+            writer.tag(3, WireType.Varint).int32(message.newsvalue);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ReviewCompetitionsRequest
+ */
+export const ReviewCompetitionsRequest = new ReviewCompetitionsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ReviewCompetitionsResponse$Type extends MessageType<ReviewCompetitionsResponse> {
+    constructor() {
+        super("ttab.everysport.ReviewCompetitionsResponse", [
+            { no: 1, name: "updated", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "warnings", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ConfigWarning }
+        ]);
+    }
+    create(value?: PartialMessage<ReviewCompetitionsResponse>): ReviewCompetitionsResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.updated = 0n;
+        message.warnings = [];
+        if (value !== undefined)
+            reflectionMergePartial<ReviewCompetitionsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ReviewCompetitionsResponse): ReviewCompetitionsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 updated */ 1:
+                    message.updated = reader.int64().toBigInt();
+                    break;
+                case /* repeated ttab.everysport.ConfigWarning warnings */ 2:
+                    message.warnings.push(ConfigWarning.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ReviewCompetitionsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 updated = 1; */
+        if (message.updated !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.updated);
+        /* repeated ttab.everysport.ConfigWarning warnings = 2; */
+        for (let i = 0; i < message.warnings.length; i++)
+            ConfigWarning.internalBinaryWrite(message.warnings[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ReviewCompetitionsResponse
+ */
+export const ReviewCompetitionsResponse = new ReviewCompetitionsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateCategoryRequest$Type extends MessageType<UpdateCategoryRequest> {
+    constructor() {
+        super("ttab.everysport.UpdateCategoryRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ },
+            { no: 2, name: "comment", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateCategoryRequest>): UpdateCategoryRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = 0n;
+        message.comment = "";
+        if (value !== undefined)
+            reflectionMergePartial<UpdateCategoryRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateCategoryRequest): UpdateCategoryRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int64 id */ 1:
+                    message.id = reader.int64().toBigInt();
+                    break;
+                case /* string comment */ 2:
+                    message.comment = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateCategoryRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int64 id = 1; */
+        if (message.id !== 0n)
+            writer.tag(1, WireType.Varint).int64(message.id);
+        /* string comment = 2; */
+        if (message.comment !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.comment);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateCategoryRequest
+ */
+export const UpdateCategoryRequest = new UpdateCategoryRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateCategoryResponse$Type extends MessageType<UpdateCategoryResponse> {
+    constructor() {
+        super("ttab.everysport.UpdateCategoryResponse", [
+            { no: 1, name: "category", kind: "message", T: () => CategoryConfig }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateCategoryResponse>): UpdateCategoryResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<UpdateCategoryResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateCategoryResponse): UpdateCategoryResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* ttab.everysport.CategoryConfig category */ 1:
+                    message.category = CategoryConfig.internalBinaryRead(reader, reader.uint32(), options, message.category);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateCategoryResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* ttab.everysport.CategoryConfig category = 1; */
+        if (message.category)
+            CategoryConfig.internalBinaryWrite(message.category, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.UpdateCategoryResponse
+ */
+export const UpdateCategoryResponse = new UpdateCategoryResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ExportConfigRequest$Type extends MessageType<ExportConfigRequest> {
+    constructor() {
+        super("ttab.everysport.ExportConfigRequest", []);
+    }
+    create(value?: PartialMessage<ExportConfigRequest>): ExportConfigRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<ExportConfigRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ExportConfigRequest): ExportConfigRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ExportConfigRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ExportConfigRequest
+ */
+export const ExportConfigRequest = new ExportConfigRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ExportConfigResponse$Type extends MessageType<ExportConfigResponse> {
+    constructor() {
+        super("ttab.everysport.ExportConfigResponse", [
+            { no: 1, name: "csv", kind: "scalar", T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ExportConfigResponse>): ExportConfigResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.csv = new Uint8Array(0);
+        if (value !== undefined)
+            reflectionMergePartial<ExportConfigResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ExportConfigResponse): ExportConfigResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bytes csv */ 1:
+                    message.csv = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ExportConfigResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bytes csv = 1; */
+        if (message.csv.length)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.csv);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ttab.everysport.ExportConfigResponse
+ */
+export const ExportConfigResponse = new ExportConfigResponse$Type();
 /**
  * @generated ServiceType for protobuf service ttab.everysport.Manage
  */
 export const Manage = new ServiceType("ttab.everysport.Manage", [
-    { name: "ManualImport", options: {}, I: ManualImportRequest, O: ManualImportResponse }
+    { name: "ManualImport", options: {}, I: ManualImportRequest, O: ManualImportResponse },
+    { name: "ListSports", options: {}, I: ListSportsRequest, O: ListSportsResponse },
+    { name: "ListCategories", options: {}, I: ListCategoriesRequest, O: ListCategoriesResponse },
+    { name: "ListCompetitions", options: {}, I: ListCompetitionsRequest, O: ListCompetitionsResponse },
+    { name: "GetSport", options: {}, I: GetSportRequest, O: GetSportResponse },
+    { name: "GetCompetition", options: {}, I: GetCompetitionRequest, O: GetCompetitionResponse },
+    { name: "UpdateSport", options: {}, I: UpdateSportRequest, O: UpdateSportResponse },
+    { name: "UpdateCompetition", options: {}, I: UpdateCompetitionRequest, O: UpdateCompetitionResponse },
+    { name: "UpdateCategory", options: {}, I: UpdateCategoryRequest, O: UpdateCategoryResponse },
+    { name: "ExportConfig", options: {}, I: ExportConfigRequest, O: ExportConfigResponse },
+    { name: "ListPendingImports", options: {}, I: ListPendingImportsRequest, O: ListPendingImportsResponse },
+    { name: "ReviewCompetitions", options: {}, I: ReviewCompetitionsRequest, O: ReviewCompetitionsResponse }
 ]);

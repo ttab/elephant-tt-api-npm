@@ -6,6 +6,28 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { Manage } from "./service";
+import type { ReviewCompetitionsResponse } from "./service";
+import type { ReviewCompetitionsRequest } from "./service";
+import type { ListPendingImportsResponse } from "./service";
+import type { ListPendingImportsRequest } from "./service";
+import type { ExportConfigResponse } from "./service";
+import type { ExportConfigRequest } from "./service";
+import type { UpdateCategoryResponse } from "./service";
+import type { UpdateCategoryRequest } from "./service";
+import type { UpdateCompetitionResponse } from "./service";
+import type { UpdateCompetitionRequest } from "./service";
+import type { UpdateSportResponse } from "./service";
+import type { UpdateSportRequest } from "./service";
+import type { GetCompetitionResponse } from "./service";
+import type { GetCompetitionRequest } from "./service";
+import type { GetSportResponse } from "./service";
+import type { GetSportRequest } from "./service";
+import type { ListCompetitionsResponse } from "./service";
+import type { ListCompetitionsRequest } from "./service";
+import type { ListCategoriesResponse } from "./service";
+import type { ListCategoriesRequest } from "./service";
+import type { ListSportsResponse } from "./service";
+import type { ListSportsRequest } from "./service";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { ManualImportResponse } from "./service";
 import type { ManualImportRequest } from "./service";
@@ -21,6 +43,75 @@ export interface IManageClient {
      * @generated from protobuf rpc: ManualImport
      */
     manualImport(input: ManualImportRequest, options?: RpcOptions): UnaryCall<ManualImportRequest, ManualImportResponse>;
+    /**
+     * ListSports lists the sports in the import configuration.
+     *
+     * @generated from protobuf rpc: ListSports
+     */
+    listSports(input: ListSportsRequest, options?: RpcOptions): UnaryCall<ListSportsRequest, ListSportsResponse>;
+    /**
+     * ListCategories lists competition categories, for one sport or for all of
+     * them. Categories are identity only, they carry no import settings.
+     *
+     * @generated from protobuf rpc: ListCategories
+     */
+    listCategories(input: ListCategoriesRequest, options?: RpcOptions): UnaryCall<ListCategoriesRequest, ListCategoriesResponse>;
+    /**
+     * ListCompetitions lists competitions in the import configuration.
+     *
+     * @generated from protobuf rpc: ListCompetitions
+     */
+    listCompetitions(input: ListCompetitionsRequest, options?: RpcOptions): UnaryCall<ListCompetitionsRequest, ListCompetitionsResponse>;
+    /**
+     * GetSport returns a single sport configuration.
+     *
+     * @generated from protobuf rpc: GetSport
+     */
+    getSport(input: GetSportRequest, options?: RpcOptions): UnaryCall<GetSportRequest, GetSportResponse>;
+    /**
+     * GetCompetition returns a single competition configuration.
+     *
+     * @generated from protobuf rpc: GetCompetition
+     */
+    getCompetition(input: GetCompetitionRequest, options?: RpcOptions): UnaryCall<GetCompetitionRequest, GetCompetitionResponse>;
+    /**
+     * UpdateSport replaces the editable settings of a sport.
+     *
+     * @generated from protobuf rpc: UpdateSport
+     */
+    updateSport(input: UpdateSportRequest, options?: RpcOptions): UnaryCall<UpdateSportRequest, UpdateSportResponse>;
+    /**
+     * UpdateCompetition replaces the editable settings of a competition.
+     *
+     * @generated from protobuf rpc: UpdateCompetition
+     */
+    updateCompetition(input: UpdateCompetitionRequest, options?: RpcOptions): UnaryCall<UpdateCompetitionRequest, UpdateCompetitionResponse>;
+    /**
+     * UpdateCategory updates the editable fields of a competition category.
+     *
+     * @generated from protobuf rpc: UpdateCategory
+     */
+    updateCategory(input: UpdateCategoryRequest, options?: RpcOptions): UnaryCall<UpdateCategoryRequest, UpdateCategoryResponse>;
+    /**
+     * ExportConfig returns the full import configuration as CSV.
+     *
+     * @generated from protobuf rpc: ExportConfig
+     */
+    exportConfig(input: ExportConfigRequest, options?: RpcOptions): UnaryCall<ExportConfigRequest, ExportConfigResponse>;
+    /**
+     * ListPendingImports lists the competitions that have calendar entries the
+     * service skipped, with the date range those entries fall in.
+     *
+     * @generated from protobuf rpc: ListPendingImports
+     */
+    listPendingImports(input: ListPendingImportsRequest, options?: RpcOptions): UnaryCall<ListPendingImportsRequest, ListPendingImportsResponse>;
+    /**
+     * ReviewCompetitions decides a batch of competitions at once, which is what
+     * working through the review queue is.
+     *
+     * @generated from protobuf rpc: ReviewCompetitions
+     */
+    reviewCompetitions(input: ReviewCompetitionsRequest, options?: RpcOptions): UnaryCall<ReviewCompetitionsRequest, ReviewCompetitionsResponse>;
 }
 /**
  * @generated from protobuf service ttab.everysport.Manage
@@ -39,5 +130,107 @@ export class ManageClient implements IManageClient, ServiceInfo {
     manualImport(input: ManualImportRequest, options?: RpcOptions): UnaryCall<ManualImportRequest, ManualImportResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<ManualImportRequest, ManualImportResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListSports lists the sports in the import configuration.
+     *
+     * @generated from protobuf rpc: ListSports
+     */
+    listSports(input: ListSportsRequest, options?: RpcOptions): UnaryCall<ListSportsRequest, ListSportsResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListSportsRequest, ListSportsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListCategories lists competition categories, for one sport or for all of
+     * them. Categories are identity only, they carry no import settings.
+     *
+     * @generated from protobuf rpc: ListCategories
+     */
+    listCategories(input: ListCategoriesRequest, options?: RpcOptions): UnaryCall<ListCategoriesRequest, ListCategoriesResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListCategoriesRequest, ListCategoriesResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListCompetitions lists competitions in the import configuration.
+     *
+     * @generated from protobuf rpc: ListCompetitions
+     */
+    listCompetitions(input: ListCompetitionsRequest, options?: RpcOptions): UnaryCall<ListCompetitionsRequest, ListCompetitionsResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListCompetitionsRequest, ListCompetitionsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GetSport returns a single sport configuration.
+     *
+     * @generated from protobuf rpc: GetSport
+     */
+    getSport(input: GetSportRequest, options?: RpcOptions): UnaryCall<GetSportRequest, GetSportResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetSportRequest, GetSportResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * GetCompetition returns a single competition configuration.
+     *
+     * @generated from protobuf rpc: GetCompetition
+     */
+    getCompetition(input: GetCompetitionRequest, options?: RpcOptions): UnaryCall<GetCompetitionRequest, GetCompetitionResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetCompetitionRequest, GetCompetitionResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * UpdateSport replaces the editable settings of a sport.
+     *
+     * @generated from protobuf rpc: UpdateSport
+     */
+    updateSport(input: UpdateSportRequest, options?: RpcOptions): UnaryCall<UpdateSportRequest, UpdateSportResponse> {
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        return stackIntercept<UpdateSportRequest, UpdateSportResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * UpdateCompetition replaces the editable settings of a competition.
+     *
+     * @generated from protobuf rpc: UpdateCompetition
+     */
+    updateCompetition(input: UpdateCompetitionRequest, options?: RpcOptions): UnaryCall<UpdateCompetitionRequest, UpdateCompetitionResponse> {
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        return stackIntercept<UpdateCompetitionRequest, UpdateCompetitionResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * UpdateCategory updates the editable fields of a competition category.
+     *
+     * @generated from protobuf rpc: UpdateCategory
+     */
+    updateCategory(input: UpdateCategoryRequest, options?: RpcOptions): UnaryCall<UpdateCategoryRequest, UpdateCategoryResponse> {
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        return stackIntercept<UpdateCategoryRequest, UpdateCategoryResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ExportConfig returns the full import configuration as CSV.
+     *
+     * @generated from protobuf rpc: ExportConfig
+     */
+    exportConfig(input: ExportConfigRequest, options?: RpcOptions): UnaryCall<ExportConfigRequest, ExportConfigResponse> {
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ExportConfigRequest, ExportConfigResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ListPendingImports lists the competitions that have calendar entries the
+     * service skipped, with the date range those entries fall in.
+     *
+     * @generated from protobuf rpc: ListPendingImports
+     */
+    listPendingImports(input: ListPendingImportsRequest, options?: RpcOptions): UnaryCall<ListPendingImportsRequest, ListPendingImportsResponse> {
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListPendingImportsRequest, ListPendingImportsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * ReviewCompetitions decides a batch of competitions at once, which is what
+     * working through the review queue is.
+     *
+     * @generated from protobuf rpc: ReviewCompetitions
+     */
+    reviewCompetitions(input: ReviewCompetitionsRequest, options?: RpcOptions): UnaryCall<ReviewCompetitionsRequest, ReviewCompetitionsResponse> {
+        const method = this.methods[11], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ReviewCompetitionsRequest, ReviewCompetitionsResponse>("unary", this._transport, method, opt, input);
     }
 }
