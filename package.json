@@ -2,7 +2,7 @@
   "name": "@ttab/elephant-tt-api",
   "private": false,
   "license": "MIT",
-  "version": "0.6.0",
+  "version": "0.6.1-beta.1",
   "type": "module",
   "exports": {
     "./baboon": {
@@ -72,11 +72,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ttab/elephant-tt-api-npm.git"
+    "url": "https://github.com/ttab/elephant-tt-api-npm"
   },
   "scripts": {
     "test": "echo \"no tests\"",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint . --cache --report-unused-disable-directives --max-warnings 0",
     "build": "pnpm run typecheck && tsdown",
     "update": "bash scripts/update.sh",
     "prepublish": "pnpm run build"
