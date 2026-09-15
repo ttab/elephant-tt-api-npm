@@ -2,7 +2,7 @@
   "name": "@ttab/elephant-tt-api",
   "private": false,
   "license": "MIT",
-  "version": "0.6.1-beta.1",
+  "version": "0.6.1",
   "type": "module",
   "exports": {
     "./baboon": {
@@ -80,7 +80,7 @@
     "lint": "eslint . --cache --report-unused-disable-directives --max-warnings 0",
     "build": "pnpm run typecheck && tsdown",
     "update": "bash scripts/update.sh",
-    "prepublish": "pnpm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "author": "",
   "description": "",
